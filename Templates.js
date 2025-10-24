@@ -18,7 +18,7 @@ export class Templates {
      * @param {string} templateName
      */
     addTemplate(templateName) {
-        const tasks = this.templates[templateName] || [];
+        const tasks = [...this.templates[templateName]] || [];
         tasks.reverse().forEach(t => this.todoList.addTaskAbove(t));
     }
 }
