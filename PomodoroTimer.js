@@ -20,11 +20,13 @@ export class PomodoroTimer {
         this.currentPhase = PomodoroTimer.PHASES.WORK;
         this.duration = this.currentPhase.duration * 60;
         this.remaining = this.duration;
+        this.canvas.closest('.timer-container').classList.add('paused');
     }
 
     /** Start the timer */
     start() {
         if (this.interval) return;
+        this.canvas.closest('.timer-container').classList.remove('paused');
         this.interval = setInterval(() => {
             this.remaining--;
             if (this.remaining <= 0) this.stop();
@@ -38,6 +40,7 @@ export class PomodoroTimer {
         if (this.interval) {
             clearInterval(this.interval);
             this.interval = null;
+            this.canvas.closest('.timer-container').classList.add('paused');
         }
     }
 

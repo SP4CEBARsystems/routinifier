@@ -17,6 +17,10 @@ body {
     margin-bottom: 30px;
 }
 
+.timer-container.paused canvas {
+    opacity: 0.5;
+}
+
 .time-display {
     position: absolute;
     top: 50%;
