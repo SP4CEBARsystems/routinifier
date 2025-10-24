@@ -19,16 +19,19 @@
         </div>
 
         <div class="todo-container">
+            <h3>Tasks</h3>
+            <div class="templates">
+                <p style="margin:0;">Routines:</p>
+                <button data-template="work" class="template-btn">Work</button>
+                <button data-template="study" class="template-btn">Study</button>
+            </div>
+            <ul id="todoList"></ul>
             <div class="todo-input">
                 <input type="text" id="newTaskInput" placeholder="Add a new task..." />
                 <button id="addTaskBtn">Add</button>
             </div>
-            <ul id="todoList"></ul>
-            <div class="templates">
-                <h3>Templates</h3>
-                <button data-template="work" class="template-btn">Work</button>
-                <button data-template="study" class="template-btn">Study</button>
-            </div>
+            <h3>Checked</h3>
+            <ul id="checkedTodoList"></ul>
         </div>
     </div>
 

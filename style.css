@@ -90,3 +90,9 @@ button :hover {
     transition: filter .15s ease, -webkit-filter .15s ease;
     will-change: filter;
 }
+
+.templates {
+    display:flex;
+    align-items:center;
+    gap:8px;
+}

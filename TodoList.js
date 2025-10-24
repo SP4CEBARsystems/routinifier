@@ -1,10 +1,17 @@
 export class TodoList {
     /**
+     * @typedef {{text: string, subtasks: any[], checked: boolean}[]} TaskList
+     */
+    tasks
+
+    /**
      * Creates a ToDo list instance.
      * @param {HTMLElement} listElement
+     * @param {HTMLElement} checkedListElement
      */
-    constructor(listElement) {
+    constructor(listElement, checkedListElement) {
         this.listElement = listElement;
+        this.checkedListElement = checkedListElement;
         this.tasks = this.load() || [];
         this.render();
     }
@@ -69,33 +76,50 @@ export class TodoList {
 
     /** Render the tasks */
     render() {
-        this.listElement.innerHTML = '';
-        this.tasks.forEach((task, index) => {
-            const li = document.createElement('li');
+        const uncheckedTasks = this.tasks.filter(task => !task.checked);
+        const checkedTasks = this.tasks.filter(task => task.checked);
+        this.renderTaskList(this.listElement, uncheckedTasks);
+        this.renderTaskList(this.checkedListElement, checkedTasks);
+    }
 
-            // Task text (clicking toggles completion)
-            const textSpan = document.createElement('span');
-            textSpan.textContent = task.text;
-            textSpan.className = 'task-text';
-            if (task.checked) li.classList.add('checked');
-            textSpan.addEventListener('click', () => this.toggleTask(index));
-
-            // Delete button on the right
-            const delBtn = document.createElement('button');
-            delBtn.type = 'button';
-            delBtn.className = 'delete-btn';
-            delBtn.setAttribute('aria-label', `Delete task ${task.text}`);
-            delBtn.textContent = '✕';
-            // Prevent the delete click from toggling the task
-            delBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.deleteTask(index);
-            });
-
-            li.appendChild(textSpan);
-            li.appendChild(delBtn);
-            this.listElement.appendChild(li);
+    /**
+     * 
+     * @param {HTMLElement} element 
+     * @param {TaskList} tasks 
+     */
+    renderTaskList(element, tasks) {
+        element.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const li = this.createTaskElement(task, index);
+            element.appendChild(li);
         });
+    }
+
+    createTaskElement(task, index) {
+        const li = document.createElement('li');
+        if (task.checked) li.classList.add('checked');
+        li.addEventListener('click', () => this.toggleTask(index));
+
+        // Task text (clicking toggles completion)
+        const textSpan = document.createElement('span');
+        textSpan.textContent = task.text;
+        textSpan.className = 'task-text';
+
+        // Delete button on the right
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'delete-btn';
+        delBtn.setAttribute('aria-label', `Delete task ${task.text}`);
+        delBtn.textContent = '✕';
+        // Prevent the delete click from toggling the task
+        delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.deleteTask(index);
+        });
+
+        li.appendChild(textSpan);
+        li.appendChild(delBtn);
+        return li;
     }
 
     /** Get top-most task text */
