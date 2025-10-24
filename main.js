@@ -1,0 +1,72 @@
+import { PomodoroTimer } from './PomodoroTimer.js';
+import { TodoList } from './TodoList.js';
+import { Templates } from './Templates.js';
+
+const canvas = document.getElementById('pomodoroCanvas');
+const timeDisplay = document.getElementById('timeDisplay');
+const todoListEl = document.getElementById('todoList');
+const newTaskInput = document.getElementById('newTaskInput');
+const addTaskBtn = document.getElementById('addTaskBtn');
+const phaseButtons = {
+    work: document.getElementById('workPhase'),
+    shortBreak: document.getElementById('shortBreakPhase'),
+    longBreak: document.getElementById('longBreakPhase')
+};
+
+const timer = new PomodoroTimer(canvas, (remaining) => {
+    timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
+    const topTask = todo.getTopTask();
+    document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
+});
+
+const todo = new TodoList(todoListEl);
+const templates = new Templates(todo);
+
+addTaskBtn.addEventListener('click', () => {
+    const text = newTaskInput.value.trim();
+    if (text) {
+        todo.addTask(text);
+        newTaskInput.value = '';
+    }
+});
+
+newTaskInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addTaskBtn.click();
+});
+
+document.querySelectorAll('.template-btn').forEach(btn => {
+    btn.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
+});
+
+timer.draw();
+
+// Add click event listener to toggle timer
+canvas.addEventListener('click', () => {
+    if (timer.isRunning()) {
+        timer.stop();
+    } else {
+        timer.start();
+    }
+});
+
+// Setup phase button handlers
+function updatePhaseButtons(activePhase) {
+    Object.entries(phaseButtons).forEach(([phase, button]) => {
+        button.classList.toggle('active', phase === activePhase);
+    });
+}
+
+phaseButtons.work.addEventListener('click', () => {
+    timer.switchPhase(PomodoroTimer.PHASES.WORK);
+    updatePhaseButtons('work');
+});
+
+phaseButtons.shortBreak.addEventListener('click', () => {
+    timer.switchPhase(PomodoroTimer.PHASES.SHORT_BREAK);
+    updatePhaseButtons('shortBreak');
+});
+
+phaseButtons.longBreak.addEventListener('click', () => {
+    timer.switchPhase(PomodoroTimer.PHASES.LONG_BREAK);
+    updatePhaseButtons('longBreak');
+});

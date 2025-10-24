@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro To-Do</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="timer-container">
+            <canvas id="pomodoroCanvas" width="200" height="200"></canvas>
+            <div class="time-display" id="timeDisplay">25:00</div>
+            <div class="phase-controls">
+                <button id="workPhase" class="phase-btn active">Work</button>
+                <button id="shortBreakPhase" class="phase-btn">Short Break</button>
+                <button id="longBreakPhase" class="phase-btn">Long Break</button>
+            </div>
+        </div>
+
+        <div class="todo-container">
+            <div class="todo-input">
+                <input type="text" id="newTaskInput" placeholder="Add a new task..." />
+                <button id="addTaskBtn">Add</button>
+            </div>
+            <ul id="todoList"></ul>
+            <div class="templates">
+                <h3>Templates</h3>
+                <button data-template="work" class="template-btn">Work</button>
+                <button data-template="study" class="template-btn">Study</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
