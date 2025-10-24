@@ -21,14 +21,17 @@ body {
     opacity: 0.5;
 }
 
-.time-display {
+.timer-display {
+    cursor: pointer;
+}
+
+.timer-text {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2em;
     font-weight: bold;
-    cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -67,7 +70,7 @@ li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: grab;
+    cursor: pointer;
 }
 
 li.checked {
