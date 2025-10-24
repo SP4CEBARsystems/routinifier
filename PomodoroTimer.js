@@ -87,7 +87,10 @@ export class PomodoroTimer {
         return this.currentPhase;
     }
 
-    /** Check if timer is running */
+    /** 
+     * Check if timer is running 
+     * @returns {boolean} true if an interval is defined, false otherwise
+    */
     isRunning() {
         return this.interval !== null;
     }
