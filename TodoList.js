@@ -1,10 +1,12 @@
 import { Task } from "./Task.js";
 
 export class TodoList {
+    static mainTodoList;
+
     /**
-     * @typedef {{text: string, subtasks: any[], checked: boolean}[]} TaskList
+     * @type {Task[]}
      */
-    tasks
+    tasks = [];
 
     /**
      * Creates a ToDo list instance.
@@ -14,7 +16,7 @@ export class TodoList {
     constructor(listElement, checkedListElement) {
         this.listElement = listElement;
         this.checkedListElement = checkedListElement;
-        this.tasks = this.load() || [];
+        this.load();
         this.render();
     }
 
@@ -61,7 +63,10 @@ export class TodoList {
 
     /** Load from localStorage */
     load() {
-        return JSON.parse(localStorage.getItem('todoTasks')) || [];
+        const tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+        tasks.forEach(task => {
+            this.addTask( task.text );
+        });
     }
 
     /** Render the tasks */
@@ -75,12 +80,12 @@ export class TodoList {
     /**
      * 
      * @param {HTMLElement} element 
-     * @param {TaskList} tasks 
+     * @param {Task[]} tasks 
      */
     renderTaskList(element, tasks) {
         element.innerHTML = '';
         tasks.forEach(task => {
-            const li = this.createTaskElement(task);
+            const li = task.render();
             element.appendChild(li);
         });
     }

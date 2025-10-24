@@ -21,6 +21,7 @@ const timer = new PomodoroTimer(canvas, (remaining) => {
 });
 
 const todo = new TodoList(todoListEl, checkedTodoListEl);
+TodoList.mainTodoList = todo;
 const templates = new Templates(todo);
 
 addTaskBtn.addEventListener('click', () => {

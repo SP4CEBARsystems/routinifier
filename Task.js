@@ -1,4 +1,4 @@
-import { TodoList } from "./TodoList";
+import { TodoList } from "./TodoList.js";
 
 export class Task {
     // /** @type {any[]} */
@@ -10,8 +10,7 @@ export class Task {
      * @param {TodoList} list 
      */
     constructor( text, list ) {
-        this.text = text
-        this.list = list
+        this.text = text;
         this.checked = false;
         this.id = Task.generateId();
     }
@@ -22,8 +21,8 @@ export class Task {
     toggleTask() {
         this.checked = !this.checked;
         // this.reorder();
-        this.list.save();
-        this.list.render();
+        TodoList.mainTodoList.save();
+        TodoList.mainTodoList.render();
     }
 
     render() {
@@ -45,7 +44,7 @@ export class Task {
         // Prevent the delete click from toggling the task
         delBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.list.deleteTask(this.id);
+            TodoList.mainTodoList.deleteTask(this.id);
         });
 
         li.appendChild(textSpan);
