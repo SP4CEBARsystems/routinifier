@@ -1,9 +1,21 @@
 export class PomodoroTimer {
+    /** @typedef {{WORK: PomodoroPhase, SHORT_BREAK: PomodoroPhase, LONG_BREAK: PomodoroPhase}} Phases */
     static PHASES = {
         WORK: { name: 'Work', duration: 25 },
         SHORT_BREAK: { name: 'Short Break', duration: 5 },
         LONG_BREAK: { name: 'Long Break', duration: 15 }
     };
+
+    // /** @type {Phases} */
+    // static PHASES = {
+    //     WORK: { name: 'Work', duration: 25/(60*5) },
+    //     SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
+    //     LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
+    // };
+
+    /** @typedef {"Work"|"Short Break"|"Long Break"} PomodoroPhaseName */
+    /** @typedef {{name: PomodoroPhaseName, duration: number}} PomodoroPhase */
+    currentPhase;
 
     /**
      * Creates a Pomodoro timer instance.
@@ -22,7 +34,8 @@ export class PomodoroTimer {
         this.remaining = this.duration;
         this.canvas.closest('.timer-container').classList.add('paused');
         this.workSessionCount = 0;
-        this.alarmSound = new Audio('/sounds/alarm.mp3'); // Placeholder path
+        this.workAlarmSound = new Audio('./audio/plannedout_work.wav'); // Placeholder path
+        this.breakAlarmSound = new Audio('./audio/plannedout_break.wav'); // Placeholder path
     }
 
     /** Get next phase based on Pomodoro technique rules */
@@ -42,11 +55,14 @@ export class PomodoroTimer {
 
     /** Handle timer completion */
     handleTimerComplete() {
-        this.alarmSound.play();
         if (this.onPhaseEnd) this.onPhaseEnd(this.currentPhase);
-        
         // Switch to next phase
         const nextPhase = this.getNextPhase();
+        if (nextPhase.name == 'Work') {
+            this.workAlarmSound.play();
+        } else {
+            this.breakAlarmSound.play();
+        }
         this.switchPhase(nextPhase);
     }
 
@@ -61,7 +77,7 @@ export class PomodoroTimer {
         this.interval = setInterval(() => {
             this.remaining--;
             if (this.remaining <= 0) {
-                this.stop();
+                // this.stop();
                 this.handleTimerComplete();
             } else {
                 this.draw();
