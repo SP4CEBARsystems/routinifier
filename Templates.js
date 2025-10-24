@@ -8,8 +8,35 @@ export class Templates {
     constructor(todoList) {
         this.todoList = todoList;
         this.templates = {
-            work: ['Check emails', 'Meeting', 'Code review'],
-            study: ['Read chapter', 'Take notes', 'Practice exercises']
+            // work: ['Check emails', 'Meeting', 'Code review'],
+            // study: ['Read chapter', 'Take notes', 'Practice exercises']
+            work: [
+                '1. Start music (lofi girl https://www.youtube.com/watch?v=jfKfPfyJRdk)',
+                '2. Start focus timer',
+                '3. Write down session focus',
+                '4. Write down in a todo list all questions you have about the tasks to do',
+                '5. Write down known tasks in a todo list',
+                '6. Write down sub-tasks for each question to answer it',
+                '7. Write down sub-tasks for each task to perform it',
+                '8. Write down onbekende (voor onderzoek) en bekende taken',
+                '9. Pick a task and start',
+            ],
+            break: [
+                '1. Choose a task to start with after the break',
+                '2. Drink water',
+                '3. Do 10 pushups',
+            ],
+            continue: [
+                '1. Continue the chosen task',
+            ],
+            arrivedHome: [
+                '1. Stash jacket and shoes',
+                '2. Bring bag upstairs',
+                '3. (Optional) Eat and drink',
+                '4. Pray',
+                '5. Read bible',
+                '6. Start routine: 90-minute-working-session',
+            ]
         };
     }
 
