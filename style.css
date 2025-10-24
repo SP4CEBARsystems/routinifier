@@ -79,3 +79,14 @@ li.checked {
 button.template-btn {
     margin: 5px 5px 0 0;
 }
+
+.delete-btn {
+    color: #777777
+}
+
+button :hover {
+    filter: brightness(0.85);
+    -webkit-filter: brightness(0.85);
+    transition: filter .15s ease, -webkit-filter .15s ease;
+    will-change: filter;
+}

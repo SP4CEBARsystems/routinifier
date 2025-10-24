@@ -43,6 +43,15 @@ export class TodoList {
         this.render();
     }
 
+    /** Delete a task by index 
+     * @param index {number}
+    */
+    deleteTask(index) {
+        this.tasks.splice(index, 1);
+        this.save();
+        this.render();
+    }
+
     /** Reorder tasks: unchecked on top */
     reorder() {
         this.tasks.sort((a, b) => a.checked - b.checked);
@@ -63,10 +72,28 @@ export class TodoList {
         this.listElement.innerHTML = '';
         this.tasks.forEach((task, index) => {
             const li = document.createElement('li');
-            li.textContent = task.text;
-            if (task.checked) li.classList.add('checked');
 
-            li.addEventListener('click', () => this.toggleTask(index));
+            // Task text (clicking toggles completion)
+            const textSpan = document.createElement('span');
+            textSpan.textContent = task.text;
+            textSpan.className = 'task-text';
+            if (task.checked) li.classList.add('checked');
+            textSpan.addEventListener('click', () => this.toggleTask(index));
+
+            // Delete button on the right
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'delete-btn';
+            delBtn.setAttribute('aria-label', `Delete task ${task.text}`);
+            delBtn.textContent = '✕';
+            // Prevent the delete click from toggling the task
+            delBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.deleteTask(index);
+            });
+
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
             this.listElement.appendChild(li);
         });
     }
