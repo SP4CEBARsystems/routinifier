@@ -15,6 +15,17 @@ export class TodoList {
      * @param {Array<string>} subtasks
      */
     addTask(text, subtasks = []) {
+        this.tasks.push({ text, subtasks, checked: false });
+        this.save();
+        this.render();
+    }
+
+    /**
+     * Add a task to the top
+     * @param {string} text
+     * @param {Array<string>} subtasks
+     */
+    addTaskAbove(text, subtasks = []) {
         this.tasks.unshift({ text, subtasks, checked: false });
         this.save();
         this.render();

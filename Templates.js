@@ -1,4 +1,10 @@
+import { TodoList } from "./TodoList.js";
+
 export class Templates {
+    /**
+     * 
+     * @param {TodoList} todoList 
+     */
     constructor(todoList) {
         this.todoList = todoList;
         this.templates = {
