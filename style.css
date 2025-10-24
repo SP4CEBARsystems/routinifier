@@ -13,7 +13,6 @@ body {
 }
 
 .timer-container {
-    position: relative;
     margin-bottom: 30px;
 }
 
@@ -22,15 +21,16 @@ body {
 }
 
 .timer-display {
+    position: relative;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .timer-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
+    font-size: 1em;
     font-weight: bold;
     user-select: none;
     -webkit-user-select: none;
