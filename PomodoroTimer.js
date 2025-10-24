@@ -27,6 +27,10 @@ export class PomodoroTimer {
     start() {
         if (this.interval) return;
         this.canvas.closest('.timer-container').classList.remove('paused');
+        // Immediately update display
+        this.draw();
+        if (this.onTick) this.onTick(this.remaining);
+        
         this.interval = setInterval(() => {
             this.remaining--;
             if (this.remaining <= 0) this.stop();
@@ -41,6 +45,9 @@ export class PomodoroTimer {
             clearInterval(this.interval);
             this.interval = null;
             this.canvas.closest('.timer-container').classList.add('paused');
+            // Immediately update display
+            this.draw();
+            if (this.onTick) this.onTick(this.remaining);
         }
     }
 
@@ -58,7 +65,9 @@ export class PomodoroTimer {
         this.currentPhase = phase;
         this.duration = this.currentPhase.duration * 60;
         this.remaining = this.duration;
+        // Immediately update display
         this.draw();
+        if (this.onTick) this.onTick(this.remaining);
         
         if (wasRunning) this.start();
     }
