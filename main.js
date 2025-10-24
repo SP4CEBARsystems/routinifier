@@ -13,7 +13,7 @@ const phaseButtons = {
     longBreak: document.getElementById('longBreakPhase')
 };
 
-export const timer = new PomodoroTimer(canvas, (remaining) => {
+const timer = new PomodoroTimer(canvas, (remaining) => {
     timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
     const topTask = todo.getTopTask();
     document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
