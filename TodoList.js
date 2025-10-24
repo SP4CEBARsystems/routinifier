@@ -53,7 +53,7 @@ export class TodoList {
     }
 
     /** Delete a task by index 
-     * @param taskId {number}
+     * @param taskId {string}
     */
     deleteTask(taskId) {
         const taskIndex = this.tasks.findIndex(element => element.id === taskId);
