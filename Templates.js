@@ -19,6 +19,6 @@ export class Templates {
      */
     addTemplate(templateName) {
         const tasks = this.templates[templateName] || [];
-        tasks.reverse().forEach(t => this.todoList.addTask(t));
+        tasks.reverse().forEach(t => this.todoList.addTaskAbove(t));
     }
 }

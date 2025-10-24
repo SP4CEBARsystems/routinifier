@@ -10,12 +10,13 @@ export class TodoList {
     }
 
     /**
-     * Add a task to the top
+     * Add a task below
      * @param {string} text
      * @param {Array<string>} subtasks
      */
     addTask(text, subtasks = []) {
         this.tasks.push({ text, subtasks, checked: false });
+        this.reorder();
         this.save();
         this.render();
     }
