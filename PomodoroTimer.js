@@ -1,9 +1,21 @@
 export class PomodoroTimer {
+    /** @typedef {{WORK: PomodoroPhase, SHORT_BREAK: PomodoroPhase, LONG_BREAK: PomodoroPhase}} Phases */
     static PHASES = {
         WORK: { name: 'Work', duration: 25 },
         SHORT_BREAK: { name: 'Short Break', duration: 5 },
         LONG_BREAK: { name: 'Long Break', duration: 15 }
     };
+
+    // /** @type {Phases} */
+    // static PHASES = {
+    //     WORK: { name: 'Work', duration: 25/(60*5) },
+    //     SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
+    //     LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
+    // };
+
+    /** @typedef {"Work"|"Short Break"|"Long Break"} PomodoroPhaseName */
+    /** @typedef {{name: PomodoroPhaseName, duration: number}} PomodoroPhase */
+    currentPhase;
 
     /**
      * Creates a Pomodoro timer instance.
@@ -21,6 +33,37 @@ export class PomodoroTimer {
         this.duration = this.currentPhase.duration * 60;
         this.remaining = this.duration;
         this.canvas.closest('.timer-container').classList.add('paused');
+        this.workSessionCount = 0;
+        this.workAlarmSound = new Audio('./audio/plannedout_work.wav'); // Placeholder path
+        this.breakAlarmSound = new Audio('./audio/plannedout_break.wav'); // Placeholder path
+    }
+
+    /** Get next phase based on Pomodoro technique rules */
+    getNextPhase() {
+        if (this.currentPhase === PomodoroTimer.PHASES.WORK) {
+            this.workSessionCount++;
+            // After 4 work sessions, take a long break
+            if (this.workSessionCount >= 4) {
+                this.workSessionCount = 0;
+                return PomodoroTimer.PHASES.LONG_BREAK;
+            }
+            return PomodoroTimer.PHASES.SHORT_BREAK;
+        }
+        // After any break, return to work
+        return PomodoroTimer.PHASES.WORK;
+    }
+
+    /** Handle timer completion */
+    handleTimerComplete() {
+        if (this.onPhaseEnd) this.onPhaseEnd(this.currentPhase);
+        // Switch to next phase
+        const nextPhase = this.getNextPhase();
+        if (nextPhase.name == 'Work') {
+            this.workAlarmSound.play();
+        } else {
+            this.breakAlarmSound.play();
+        }
+        this.switchPhase(nextPhase);
     }
 
     /** Start the timer */
@@ -33,9 +76,13 @@ export class PomodoroTimer {
         
         this.interval = setInterval(() => {
             this.remaining--;
-            if (this.remaining <= 0) this.stop();
-            this.draw();
-            if (this.onTick) this.onTick(this.remaining);
+            if (this.remaining <= 0) {
+                // this.stop();
+                this.handleTimerComplete();
+            } else {
+                this.draw();
+                if (this.onTick) this.onTick(this.remaining);
+            }
         }, 1000);
     }
 
