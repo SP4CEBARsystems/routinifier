@@ -22,8 +22,9 @@ export class TodoList {
      * @param {Array<string>} subtasks
      */
     addTask(text, subtasks = []) {
-        this.tasks.push({ text, subtasks, checked: false });
-        this.reorder();
+        const id = TodoList.generateId();
+        this.tasks.push({ text, subtasks, checked: false, id });
+        // this.reorder();
         this.save();
         this.render();
     }
@@ -34,27 +35,29 @@ export class TodoList {
      * @param {Array<string>} subtasks
      */
     addTaskAbove(text, subtasks = []) {
-        this.tasks.unshift({ text, subtasks, checked: false });
+        const id = TodoList.generateId();
+        this.tasks.unshift({ text, subtasks, checked: false, id });
         this.save();
         this.render();
     }
 
     /**
      * Toggle task completion
-     * @param {number} index
+     * @param {any} task
      */
-    toggleTask(index) {
-        this.tasks[index].checked = !this.tasks[index].checked;
-        this.reorder();
+    toggleTask(task) {
+        task.checked = !task.checked;
+        // this.reorder();
         this.save();
         this.render();
     }
 
     /** Delete a task by index 
-     * @param index {number}
+     * @param taskId {number}
     */
-    deleteTask(index) {
-        this.tasks.splice(index, 1);
+    deleteTask(taskId) {
+        const taskIndex = this.tasks.findIndex(element => element.id === taskId);
+        this.tasks.splice(taskIndex, 1);
         this.save();
         this.render();
     }
@@ -89,16 +92,16 @@ export class TodoList {
      */
     renderTaskList(element, tasks) {
         element.innerHTML = '';
-        tasks.forEach((task, index) => {
-            const li = this.createTaskElement(task, index);
+        tasks.forEach(task => {
+            const li = this.createTaskElement(task);
             element.appendChild(li);
         });
     }
 
-    createTaskElement(task, index) {
+    createTaskElement(task) {
         const li = document.createElement('li');
         if (task.checked) li.classList.add('checked');
-        li.addEventListener('click', () => this.toggleTask(index));
+        li.addEventListener('click', () => this.toggleTask(task));
 
         // Task text (clicking toggles completion)
         const textSpan = document.createElement('span');
@@ -114,7 +117,7 @@ export class TodoList {
         // Prevent the delete click from toggling the task
         delBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.deleteTask(index);
+            this.deleteTask(task.id);
         });
 
         li.appendChild(textSpan);
@@ -126,5 +129,9 @@ export class TodoList {
     getTopTask() {
         const top = this.tasks.find(t => !t.checked);
         return top ? top.text : '';
+    }
+
+    static generateId(){
+        return "id" + Math.random().toString(16).slice(2);
     }
 }
