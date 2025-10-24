@@ -1,5 +1,3 @@
-import { timer } from "./main";
-
 export class PomodoroTimer {
     static PHASES = {
         WORK: { name: 'Work', duration: 25 },
