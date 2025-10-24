@@ -1,3 +1,5 @@
+import { Task } from "./Task.js";
+
 export class TodoList {
     /**
      * @typedef {{text: string, subtasks: any[], checked: boolean}[]} TaskList
@@ -19,11 +21,9 @@ export class TodoList {
     /**
      * Add a task below
      * @param {string} text
-     * @param {Array<string>} subtasks
      */
-    addTask(text, subtasks = []) {
-        const id = TodoList.generateId();
-        this.tasks.push({ text, subtasks, checked: false, id });
+    addTask(text) {
+        this.tasks.push(new Task( text, this ));
         // this.reorder();
         this.save();
         this.render();
@@ -32,22 +32,9 @@ export class TodoList {
     /**
      * Add a task to the top
      * @param {string} text
-     * @param {Array<string>} subtasks
      */
-    addTaskAbove(text, subtasks = []) {
-        const id = TodoList.generateId();
-        this.tasks.unshift({ text, subtasks, checked: false, id });
-        this.save();
-        this.render();
-    }
-
-    /**
-     * Toggle task completion
-     * @param {any} task
-     */
-    toggleTask(task) {
-        task.checked = !task.checked;
-        // this.reorder();
+    addTaskAbove(text) {
+        this.tasks.unshift(new Task( text, this ));
         this.save();
         this.render();
     }
@@ -98,40 +85,9 @@ export class TodoList {
         });
     }
 
-    createTaskElement(task) {
-        const li = document.createElement('li');
-        if (task.checked) li.classList.add('checked');
-        li.addEventListener('click', () => this.toggleTask(task));
-
-        // Task text (clicking toggles completion)
-        const textSpan = document.createElement('span');
-        textSpan.textContent = task.text;
-        textSpan.className = 'task-text';
-
-        // Delete button on the right
-        const delBtn = document.createElement('button');
-        delBtn.type = 'button';
-        delBtn.className = 'delete-btn';
-        delBtn.setAttribute('aria-label', `Delete task ${task.text}`);
-        delBtn.textContent = '✕';
-        // Prevent the delete click from toggling the task
-        delBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.deleteTask(task.id);
-        });
-
-        li.appendChild(textSpan);
-        li.appendChild(delBtn);
-        return li;
-    }
-
     /** Get top-most task text */
     getTopTask() {
         const top = this.tasks.find(t => !t.checked);
         return top ? top.text : '';
-    }
-
-    static generateId(){
-        return "id" + Math.random().toString(16).slice(2);
     }
 }
