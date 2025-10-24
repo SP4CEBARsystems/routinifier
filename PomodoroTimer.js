@@ -23,6 +23,33 @@ export class PomodoroTimer {
         this.duration = this.currentPhase.duration * 60;
         this.remaining = this.duration;
         this.canvas.closest('.timer-container').classList.add('paused');
+        this.workSessionCount = 0;
+        this.alarmSound = new Audio('/sounds/alarm.mp3'); // Placeholder path
+    }
+
+    /** Get next phase based on Pomodoro technique rules */
+    getNextPhase() {
+        if (this.currentPhase === PomodoroTimer.PHASES.WORK) {
+            this.workSessionCount++;
+            // After 4 work sessions, take a long break
+            if (this.workSessionCount >= 4) {
+                this.workSessionCount = 0;
+                return PomodoroTimer.PHASES.LONG_BREAK;
+            }
+            return PomodoroTimer.PHASES.SHORT_BREAK;
+        }
+        // After any break, return to work
+        return PomodoroTimer.PHASES.WORK;
+    }
+
+    /** Handle timer completion */
+    handleTimerComplete() {
+        this.alarmSound.play();
+        if (this.onPhaseEnd) this.onPhaseEnd(this.currentPhase);
+        
+        // Switch to next phase
+        const nextPhase = this.getNextPhase();
+        this.switchPhase(nextPhase);
     }
 
     /** Start the timer */
@@ -35,9 +62,13 @@ export class PomodoroTimer {
         
         this.interval = setInterval(() => {
             this.remaining--;
-            if (this.remaining <= 0) this.stop();
-            this.draw();
-            if (this.onTick) this.onTick(this.remaining);
+            if (this.remaining <= 0) {
+                this.stop();
+                this.handleTimerComplete();
+            } else {
+                this.draw();
+                if (this.onTick) this.onTick(this.remaining);
+            }
         }, 1000);
     }
 
