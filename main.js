@@ -13,7 +13,7 @@ const phaseButtons = {
     longBreak: document.getElementById('longBreakPhase')
 };
 
-const timer = new PomodoroTimer(canvas, (remaining) => {
+export const timer = new PomodoroTimer(canvas, (remaining) => {
     timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
     const topTask = todo.getTopTask();
     document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
@@ -40,19 +40,9 @@ document.querySelectorAll('.template-btn').forEach(btn => {
 
 timer.draw();
 
-// Add click event listener to toggle timer
-// Function to toggle timer state
-const toggleTimer = () => {
-    if (timer.isRunning()) {
-        timer.stop();
-    } else {
-        timer.start();
-    }
-};
-
 // Add click event listeners to both canvas and time display
-canvas.addEventListener('click', toggleTimer);
-timeDisplay.addEventListener('click', toggleTimer);
+canvas.addEventListener('click', timer.toggle);
+timeDisplay.addEventListener('click', timer.toggle);
 
 // Setup phase button handlers
 function updatePhaseButtons(activePhase) {

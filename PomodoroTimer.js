@@ -1,3 +1,5 @@
+import { timer } from "./main";
+
 export class PomodoroTimer {
     static PHASES = {
         WORK: { name: 'Work', duration: 25 },
@@ -48,6 +50,16 @@ export class PomodoroTimer {
             // Immediately update display
             this.draw();
             if (this.onTick) this.onTick(this.remaining);
+        }
+    }
+
+    // Add click event listener to toggle timer
+    // Function to toggle timer state
+    toggle() {
+        if (this.isRunning()) {
+            this.stop();
+        } else {
+            this.start();
         }
     }
 
@@ -112,3 +124,4 @@ export class PomodoroTimer {
         return `${m}:${s}`;
     }
 }
+
