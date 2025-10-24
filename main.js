@@ -5,6 +5,7 @@ import { Templates } from './Templates.js';
 const canvas = document.getElementById('pomodoroCanvas');
 const timeDisplay = document.getElementById('timeDisplay');
 const todoListEl = document.getElementById('todoList');
+const checkedTodoListEl = document.getElementById('checkedTodoList');
 const newTaskInput = document.getElementById('newTaskInput');
 const addTaskBtn = document.getElementById('addTaskBtn');
 const phaseButtons = {
@@ -19,7 +20,7 @@ const timer = new PomodoroTimer(canvas, (remaining) => {
     document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
 });
 
-const todo = new TodoList(todoListEl);
+const todo = new TodoList(todoListEl, checkedTodoListEl);
 const templates = new Templates(todo);
 
 addTaskBtn.addEventListener('click', () => {
