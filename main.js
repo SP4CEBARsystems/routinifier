@@ -41,13 +41,18 @@ document.querySelectorAll('.template-btn').forEach(btn => {
 timer.draw();
 
 // Add click event listener to toggle timer
-canvas.addEventListener('click', () => {
+// Function to toggle timer state
+const toggleTimer = () => {
     if (timer.isRunning()) {
         timer.stop();
     } else {
         timer.start();
     }
-});
+};
+
+// Add click event listeners to both canvas and time display
+canvas.addEventListener('click', toggleTimer);
+timeDisplay.addEventListener('click', toggleTimer);
 
 // Setup phase button handlers
 function updatePhaseButtons(activePhase) {

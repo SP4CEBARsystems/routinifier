@@ -28,6 +28,11 @@ body {
     transform: translate(-50%, -50%);
     font-size: 2em;
     font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .todo-container {
