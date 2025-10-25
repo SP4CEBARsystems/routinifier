@@ -37,6 +37,7 @@ export class Task {
         if (this.indentationLevel < 0) {
             this.indentationLevel = 0;
         }
+        TodoList.mainTodoList.save();
         this.render();
     }
 
