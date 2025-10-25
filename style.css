@@ -33,10 +33,10 @@ body {
     position: absolute;
     font-size: 1em;
     font-weight: bold;
-    user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    user-select: none;
 }
 
 h2 {
@@ -127,28 +127,24 @@ button.template-btn {
     outline-offset: 2px;
 }
 
-button :hover {
-    filter: brightness(0.85);
+button:hover {
     -webkit-filter: brightness(0.85);
+    filter: brightness(0.85);
     transition: filter .15s ease, -webkit-filter .15s ease;
     will-change: filter;
 }
 
 .templates {
-    display:flex;
-    align-items:center;
-    gap:8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 #todoList {
     color: #505050
 }
 
-summary h2 {
-    display: inline;
-    margin: 0 0 0 0.2rem;
-}
-
+summary h2,
 summary h3 {
     display: inline;
     margin: 0 0 0 0.2rem;
