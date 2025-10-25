@@ -136,6 +136,10 @@ export class TodoList {
      * @param {HTMLElement} element 
      */
     renderFirstTaskSummary(element) {
+        this.renderTaskList(element, this.getFirstTaskSummary());
+    }
+
+    getFirstTaskSummary() {
         let requiredIndentation = 0;
         const topmostTasks = this.tasks.filter(t => {
             if (t.checked) return false;
@@ -143,7 +147,7 @@ export class TodoList {
             requiredIndentation = t.indentationLevel + 1;
             return true;
         });
-        this.renderTaskList(element, topmostTasks);
+        return topmostTasks;
     }
 
     /**
@@ -160,9 +164,13 @@ export class TodoList {
     }
 
     /** Get top-most task text */
-    getTopTask() {
-        const top = this.tasks.find(t => !t.checked);
-        return top ? top.text : '';
+    getTopTaskText() {
+        return this.getFirstTaskSummary().map(t => t.text).reverse().join(" - ");
+        // const top = this.getFirstTask()?.text ?? '';
+    }
+
+    getFirstTask() {
+        return this.tasks.find(t => !t.checked);
     }
 
     /** Get top-most task text */

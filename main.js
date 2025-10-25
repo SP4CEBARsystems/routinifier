@@ -22,7 +22,7 @@ TodoList.firstTaskSummary = currentTaskEl;
 
 const timer = new PomodoroTimer(canvas, (remaining) => {
     timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
-    const topTask = todo.getTopTask();
+    const topTask = todo.getTopTaskText();
     // currentTaskEl.textContent = topTask;
     todo.renderFirstTaskSummary(currentTaskEl);
     document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
