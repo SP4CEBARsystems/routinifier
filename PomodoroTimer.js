@@ -1,38 +1,70 @@
 export class PomodoroTimer {
+    /** @typedef {"Work"|"Short Break"|"Long Break"} PomodoroPhaseName */
+    /** @typedef {{name: PomodoroPhaseName, duration: number}} PomodoroPhase */
     /** @typedef {{WORK: PomodoroPhase, SHORT_BREAK: PomodoroPhase, LONG_BREAK: PomodoroPhase}} Phases */
+    /** @type {Phases} */
     static PHASES = {
         WORK: { name: 'Work', duration: 25 },
         SHORT_BREAK: { name: 'Short Break', duration: 5 },
         LONG_BREAK: { name: 'Long Break', duration: 15 }
+        // WORK: { name: 'Work', duration: 25/(60*5) },
+        // SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
+        // LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
     };
+    
+    /** @type {HTMLCanvasElement} */
+    canvas
+    
+    /** @type {CanvasRenderingContext2D} */
+    ctx
+    
+    /** @type {Function|null} */
+    onTick
+    
+    /** @type {Function|null} */
+    onPhaseEnd
+    
+    /** @type {number|null} */
+    interval
 
-    // /** @type {Phases} */
-    // static PHASES = {
-    //     WORK: { name: 'Work', duration: 25/(60*5) },
-    //     SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
-    //     LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
-    // };
-
-    /** @typedef {"Work"|"Short Break"|"Long Break"} PomodoroPhaseName */
-    /** @typedef {{name: PomodoroPhaseName, duration: number}} PomodoroPhase */
+    /** @type {PomodoroPhase} */
     currentPhase;
+    
+    /** @type {number} */
+    duration
+    
+    /** @type {number} */
+    remaining
+    
+    /** @type {number} */
+    workSessionCount
+    
+    /** @type {HTMLAudioElement} */
+    workAlarmSound
+    
+    /** @type {HTMLAudioElement} */
+    breakAlarmSound
 
     /**
      * Creates a Pomodoro timer instance.
      * @param {HTMLCanvasElement} canvas
-     * @param {Function} onTick Callback every second
-     * @param {Function} onPhaseEnd Callback when phase ends
+     * @param {Function|null} onTick Callback every second
+     * @param {Function|null} onPhaseEnd Callback when phase ends
      */
     constructor(canvas, onTick = null, onPhaseEnd = null) {
         this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            throw new Error('no ctx');
+        }
+        this.ctx = ctx;
         this.onTick = onTick;
         this.onPhaseEnd = onPhaseEnd;
         this.interval = null;
         this.currentPhase = PomodoroTimer.PHASES.WORK;
         this.duration = this.currentPhase.duration * 60;
         this.remaining = this.duration;
-        this.canvas.closest('.timer-container').classList.add('paused');
+        this.canvas.closest('.timer-container')?.classList.add('paused');
         this.workSessionCount = 0;
         this.workAlarmSound = new Audio('./audio/plannedout_work.wav'); // Placeholder path
         this.breakAlarmSound = new Audio('./audio/plannedout_break.wav'); // Placeholder path
@@ -69,7 +101,7 @@ export class PomodoroTimer {
     /** Start the timer */
     start() {
         if (this.interval) return;
-        this.canvas.closest('.timer-container').classList.remove('paused');
+        this.canvas.closest('.timer-container')?.classList.remove('paused');
         // Immediately update display
         this.draw();
         if (this.onTick) this.onTick(this.remaining);
@@ -91,15 +123,16 @@ export class PomodoroTimer {
         if (this.interval) {
             clearInterval(this.interval);
             this.interval = null;
-            this.canvas.closest('.timer-container').classList.add('paused');
+            this.canvas.closest('.timer-container')?.classList.add('paused');
             // Immediately update display
             this.draw();
             if (this.onTick) this.onTick(this.remaining);
         }
     }
 
-    // Add click event listener to toggle timer
-    // Function to toggle timer state
+    /**
+     *  Function to toggle timer state 
+    */
     toggle() {
         if (this.isRunning()) {
             this.stop();
@@ -114,7 +147,9 @@ export class PomodoroTimer {
         this.draw();
     }
 
-    /** Switch to a specific phase */
+    /** Switch to a specific phase 
+     * @param {PomodoroPhase} phase
+    */
     switchPhase(phase) {
         const wasRunning = this.isRunning();
         if (wasRunning) this.stop();
@@ -144,28 +179,34 @@ export class PomodoroTimer {
 
     /** Draw shrinking pie */
     draw() {
+        const center = {
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2,
+        }
         const ctx = this.ctx;
-        const radius = this.canvas.width / 2 - 10;
+        const radius = center.x - 10;
         const angle = (this.remaining / this.duration) * 2 * Math.PI;
 
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Background circle
         ctx.beginPath();
-        ctx.arc(this.canvas.width / 2, this.canvas.height / 2, radius, 0, 2 * Math.PI);
+        ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI);
         ctx.fillStyle = '#ddd';
         ctx.fill();
 
         // Timer arc
         ctx.beginPath();
-        ctx.moveTo(this.canvas.width / 2, this.canvas.height / 2);
-        ctx.arc(this.canvas.width / 2, this.canvas.height / 2, radius, -Math.PI / 2, -Math.PI / 2 + angle, false);
+        ctx.moveTo(center.x, center.y);
+        ctx.arc(center.x, center.y, radius, -Math.PI / 2, -Math.PI / 2 - angle, true);
         ctx.closePath();
         ctx.fillStyle = '#ff6347';
         ctx.fill();
     }
 
-    /** Format time as mm:ss */
+    /** Format time as mm:ss 
+     * @param {number} seconds 
+    */
     static formatTime(seconds) {
         const m = Math.floor(seconds / 60).toString().padStart(2, '0');
         const s = (seconds % 60).toString().padStart(2, '0');

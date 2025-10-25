@@ -13,10 +13,15 @@ const phaseButtons = {
     shortBreak: document.getElementById('shortBreakPhase'),
     longBreak: document.getElementById('longBreakPhase')
 };
+const currentTaskEl = document.getElementById('currentTask');
+if (!currentTaskEl) {
+    throw new Error('no currentTaskEl!')
+}
 
 const timer = new PomodoroTimer(canvas, (remaining) => {
     timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
     const topTask = todo.getTopTask();
+    currentTaskEl.textContent = topTask;
     document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
 });
 
@@ -34,6 +39,13 @@ addTaskBtn.addEventListener('click', () => {
 
 newTaskInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') addTaskBtn.click();
+});
+
+currentTask.addEventListener('click', () => {
+    todo.checkTopTask();
+    currentTaskEl.textContent = todo.getTopTask();
+    todo.render();
+    todo.save();
 });
 
 document.querySelectorAll('.template-btn').forEach(btn => {

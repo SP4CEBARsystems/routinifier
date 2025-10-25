@@ -23,9 +23,10 @@ export class TodoList {
     /**
      * Add a task below
      * @param {string} text
+     * @param {boolean} [isChecked] 
      */
-    addTask(text) {
-        this.tasks.push(new Task( text, this ));
+    addTask(text, isChecked) {
+        this.tasks.push(new Task( text, isChecked ));
         // this.reorder();
         this.save();
         this.render();
@@ -89,9 +90,12 @@ export class TodoList {
 
     /** Load from localStorage */
     load() {
+        /**
+         * @type {Task[]}
+         */
         const tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
         tasks.forEach(task => {
-            this.addTask( task.text );
+            this.addTask( task.text, task.checked);
         });
     }
 
@@ -136,5 +140,12 @@ export class TodoList {
     getTopTask() {
         const top = this.tasks.find(t => !t.checked);
         return top ? top.text : '';
+    }
+
+    /** Get top-most task text */
+    checkTopTask() {
+        const top = this.tasks.find(t => !t.checked);
+        if (!top) return;
+        top.checked = true;
     }
 }
