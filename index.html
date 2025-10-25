@@ -9,19 +9,23 @@
 <body>
     <article class="container">
         <h1>Routinify</h1>
-        <h2>Timer</h2>
-        <section class="timer-container">
-            <div class="timer-display">
-                <canvas id="pomodoroCanvas" width="200" height="200"></canvas>
-                <div class="timer-text" id="timeDisplay">25:00</div>
-            </div>
-            <div class="phase-controls">
-                <button id="workPhase" class="phase-btn active">Work</button>
-                <button id="shortBreakPhase" class="phase-btn">Short Break</button>
-                <button id="longBreakPhase" class="phase-btn">Long Break</button>
-            </div>
-        </section>
+        <details open>
+            <summary>
+                <h2>Timer</h2>
+            </summary>
+            <section class="timer-container">
+                <div class="timer-display">
+                    <canvas id="pomodoroCanvas" width="200" height="200"></canvas>
+                    <div class="timer-text" id="timeDisplay">25:00</div>
+                </div>
+                <div class="phase-controls">
+                    <button id="workPhase" class="phase-btn active">Work</button>
+                    <button id="shortBreakPhase" class="phase-btn">Short Break</button>
+                    <button id="longBreakPhase" class="phase-btn">Long Break</button>
+                </div>
+            </section>
         <p id="currentTask"></p>
+        </details>
 
         <details class="todo-container" open>
             <summary>

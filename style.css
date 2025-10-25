@@ -140,7 +140,7 @@ summary {
     transition: background-color 0.2s ease;
     border-radius: 2px;
     padding: 0.8rem 1rem;
-    background-color: #d8d8d8;
+    background-color: #eee;
 }
 
 summary:hover {
@@ -153,5 +153,9 @@ summary:active {
 
 #currentTask {
     cursor: pointer;
+    width: 100%;
+}
+
+details {
     width: 100%;
 }
