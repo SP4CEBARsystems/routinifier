@@ -60,7 +60,7 @@ export class TodoList {
     moveTaskDown(taskId) {
         return this.moveTaskByOffset(taskId, 1);
     }
-    
+
     /**
      * Move a task by an offset (negative = up, positive = down).
      * @param {string} taskId
@@ -97,15 +97,31 @@ export class TodoList {
 
     /** Render the tasks */
     render() {
-        const uncheckedTasks = this.tasks.filter(task => !task.checked);
-        const checkedTasks = this.tasks.filter(task => task.checked);
-        this.renderTaskList(this.listElement, uncheckedTasks);
-        this.renderTaskList(this.checkedListElement, checkedTasks);
+        this.renderFiltered(this.listElement, task => !task.checked);
+        this.renderFiltered(this.checkedListElement, task => task.checked);
+    }
+    
+    /**
+     * 
+     * @param {HTMLElement} element the parent DOM element to render to
+     * @param {(task:Task)=>boolean} predicate for Array.prototype.filter() on this.tasks
+     */
+    renderFiltered(element, predicate) {
+        const checkedTasks = this.tasks.filter(predicate);
+        this.renderTaskList(element, checkedTasks);
     }
 
     /**
      * 
-     * @param {HTMLElement} element 
+     * @param {HTMLElement} element the parent DOM element to render to
+     */
+    renderAll(element) {
+        this.renderTaskList(element, this.tasks);
+    }
+
+    /**
+     * 
+     * @param {HTMLElement} element the parent DOM element to render to
      * @param {Task[]} tasks 
      */
     renderTaskList(element, tasks) {
