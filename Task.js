@@ -156,6 +156,60 @@ export class Task {
         return btn;
     }
 
+    /**
+     * 
+     * @param {Task[]} taskList 
+     * @returns {number}
+     */
+    getIndex(taskList) {
+        return taskList.findIndex(t => t.id === this.id);
+    }
+
+    /**
+     * Gets a selected number of generations (children, grandchildren, etc.) from this task in a specified list.
+     * @param {Task[]} taskList the list of task to search through
+     * @param {number} [generationLimit=0] the amount of generations to get: 0 gets you all generations, 1 and above gets you 1 and above generations
+     * @param {boolean} [hasToBeChecked=false] enables checking if the task is checked
+     */
+    getChildren(taskList, generationLimit = 1, hasToBeChecked = false) {
+        const thisIndex = this.getIndex(taskList);
+        const childIndentationLevel = this.indentationLevel + 1;
+        const cutoffIndentationLevel = childIndentationLevel + generationLimit - 1;
+        const isGenerationLimited = generationLimit > 0;
+        let isDone = false;
+        return taskList.filter((task, i) => {
+            if (
+                isDone || 
+                thisIndex >= i || 
+                hasToBeChecked && task.checked || 
+                isGenerationLimited && task.indentationLevel > cutoffIndentationLevel
+            ) return false;
+            if (task.indentationLevel < childIndentationLevel) {
+                isDone = true
+                return false;
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Gets all children, grandchildren, etc. of this task in a specified list.
+     * @param {Task[]} taskList the list of task to search through
+     * @param {boolean} [hasToBeChecked] enables checking if the task is checked
+     */
+    getAllChildren(taskList, hasToBeChecked){
+        return this.getChildren(taskList, 0, hasToBeChecked);
+    }
+
+    /**
+     * Gets the amount of children, grandchildren, etc. of this task in a specified list.
+     * @param {Task[]} taskList the list of task to search through
+     * @param {boolean} [hasToBeChecked] enables checking if the task is checked
+     */
+    getChildCount(taskList, hasToBeChecked){
+        return this.getChildren(taskList, 0, hasToBeChecked).length;
+    }
+
     static generateId() {
         return "id" + Math.random().toString(16).slice(2);
     }
