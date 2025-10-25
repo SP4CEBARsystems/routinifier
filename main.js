@@ -18,10 +18,13 @@ if (!currentTaskEl) {
     throw new Error('no currentTaskEl!')
 }
 
+TodoList.firstTaskSummary = currentTaskEl;
+
 const timer = new PomodoroTimer(canvas, (remaining) => {
     timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
     const topTask = todo.getTopTask();
-    currentTaskEl.textContent = topTask;
+    // currentTaskEl.textContent = topTask;
+    todo.renderFirstTaskSummary(currentTaskEl);
     document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
 });
 
@@ -41,12 +44,13 @@ newTaskInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') addTaskBtn.click();
 });
 
-currentTask.addEventListener('click', () => {
-    todo.checkTopTask();
-    currentTaskEl.textContent = todo.getTopTask();
-    todo.render();
-    todo.save();
-});
+// currentTaskEl.addEventListener('click', () => {
+//     todo.checkTopTask();
+//     todo.renderFirstTaskSummary(currentTaskEl);
+//     // currentTaskEl.textContent = todo.getTopTask();
+//     // todo.render();
+//     todo.save();
+// });
 
 document.querySelectorAll('.template-btn').forEach(btn => {
     btn.addEventListener('click', () => templates.addTemplate(btn.dataset.template));

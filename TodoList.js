@@ -4,6 +4,9 @@ export class TodoList {
     /** @type {TodoList} */
     static mainTodoList;
 
+    /** @type {HTMLElement} */
+    static firstTaskSummary;
+
     /**
      * @type {Task[]}
      */
@@ -107,6 +110,7 @@ export class TodoList {
     render() {
         this.renderFiltered(this.listElement, task => !task.checked);
         this.renderFiltered(this.checkedListElement, task => task.checked);
+        this.renderFirstTaskSummary(TodoList.firstTaskSummary);
     }
     
     /**
@@ -125,6 +129,21 @@ export class TodoList {
      */
     renderAll(element) {
         this.renderTaskList(element, this.tasks);
+    }
+
+    /**
+     * 
+     * @param {HTMLElement} element 
+     */
+    renderFirstTaskSummary(element) {
+        let requiredIndentation = 0;
+        const topmostTasks = this.tasks.filter(t => {
+            if (t.checked) return false;
+            if (t.indentationLevel < requiredIndentation) return false;
+            requiredIndentation = t.indentationLevel + 1;
+            return true;
+        });
+        this.renderTaskList(element, topmostTasks);
     }
 
     /**

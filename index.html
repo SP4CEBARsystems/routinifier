@@ -24,12 +24,18 @@
                     <button id="longBreakPhase" class="phase-btn">Long Break</button>
                 </div>
             </section>
-        <p id="currentTask"></p>
+        </details>
+
+        <details open>
+            <summary>
+                <h2>Current Task</h2>
+            </summary>
+            <p id="currentTask"></p>
         </details>
 
         <details class="todo-container" open>
             <summary>
-                <h2>Tasks</h2>
+                <h2>Other Tasks</h2>
             </summary>
             <ul id="todoList"></ul>
             <div class="todo-input">
@@ -41,8 +47,12 @@
                 <button data-template="work" class="template-btn">Work</button>
                 <button data-template="break" class="template-btn">Break</button>
             </div>
-            <h3>Checked Tasks</h3>
-            <ul id="checkedTodoList"></ul>
+            <details>
+                <summary>
+                    <h3>Checked Tasks</h3>
+                </summary>
+                <ul id="checkedTodoList"></ul>
+            </details>
         </details>
     </article>
 
