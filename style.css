@@ -84,6 +84,10 @@ li.checked {
     order: 9999;
 }
 
+.indentSpacer {
+    width: 30px;
+}
+
 button.template-btn {
     margin: 5px 5px 0 0;
 }

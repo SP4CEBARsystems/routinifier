@@ -70,6 +70,7 @@ export class Task {
         for (let i = 0; i < this.indentationLevel; i++) {
             const div = document.createElement('div');
             div.textContent = '>';
+            div.className = 'indentSpacer';
             li.appendChild(div);
         }
     }
