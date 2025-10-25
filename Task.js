@@ -65,27 +65,26 @@ export class Task {
     }
 
     renderMoveUpBtn() {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'move-btn move-up';
-        btn.title = 'Move up';
-        btn.textContent = '▲';
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            TodoList.mainTodoList.moveTaskUp(this.id);
-        });
-        return btn;
+        return this.renderMoveBtn('up');
     }
 
     renderMoveDownBtn() {
+        return this.renderMoveBtn('down');
+    }
+
+    renderMoveBtn(direction) {
+        const isUp = direction === 'up';
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'move-btn move-down';
-        btn.title = 'Move down';
-        btn.textContent = '▼';
+        btn.className = `move-btn move-${direction}`;
+        btn.title = isUp ? 'Move up' : 'Move down';
+        btn.setAttribute('aria-label', `${isUp ? 'Move task up' : 'Move task down'} ${this.text}`);
+        btn.textContent = isUp ? '▲' : '▼';
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            TodoList.mainTodoList.moveTaskDown(this.id);
+            const list = TodoList.mainTodoList;
+            if (isUp) list.moveTaskUp(this.id);
+            else list.moveTaskDown(this.id);
         });
         return btn;
     }

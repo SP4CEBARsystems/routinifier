@@ -53,26 +53,28 @@ export class TodoList {
 
     /** Move a task up in the list */
     moveTaskUp(taskId) {
-        const idx = this.tasks.findIndex(t => t.id === taskId);
-        if (idx > 0) {
-            const tmp = this.tasks[idx - 1];
-            this.tasks[idx - 1] = this.tasks[idx];
-            this.tasks[idx] = tmp;
-            this.save();
-            this.render();
-        }
+        return this.moveTaskByOffset(taskId, -1);
     }
 
     /** Move a task down in the list */
     moveTaskDown(taskId) {
+        return this.moveTaskByOffset(taskId, 1);
+    }
+    
+    /**
+     * Move a task by an offset (negative = up, positive = down).
+     * @param {string} taskId
+     * @param {number} offset
+     * @returns {boolean} true if moved
+     */
+    moveTaskByOffset(taskId, offset) {
         const idx = this.tasks.findIndex(t => t.id === taskId);
-        if (idx >= 0 && idx < this.tasks.length - 1) {
-            const tmp = this.tasks[idx + 1];
-            this.tasks[idx + 1] = this.tasks[idx];
-            this.tasks[idx] = tmp;
-            this.save();
-            this.render();
-        }
+        const newIdx = idx + offset;
+        if (idx < 0 || newIdx < 0 || newIdx >= this.tasks.length) return false;
+        [this.tasks[idx], this.tasks[newIdx]] = [this.tasks[newIdx], this.tasks[idx]];
+        this.save();
+        this.render();
+        return true;
     }
 
     /** Reorder tasks: unchecked on top */
