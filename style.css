@@ -1,9 +1,33 @@
+:root {
+    --bg: #f9f9f9;
+    --surface: #ffffff;
+    --text: #222222;
+    --muted: #777777;
+    --muted-2: #aaaaaa;
+    --accent: #ff6347; /* tomato */
+    --focus: #b3d4fc;
+    --card-radius: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f1720;
+        --surface: #0b1220;
+        --text: #e6eef8;
+        --muted: #9aa6b2;
+        --muted-2: #6b7783;
+        --accent: #ff8a65;
+        --focus: #274b6b;
+    }
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     padding: 20px;
-    background: #f9f9f9;
+    background: var(--bg);
+    color: var(--text);
 }
 
 .container {
@@ -33,10 +57,11 @@ body {
     position: absolute;
     font-size: 1em;
     font-weight: bold;
-    user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    user-select: none;
+    color: var(--text);
 }
 
 h2 {
@@ -56,6 +81,9 @@ h2 {
     flex: 1;
     padding: 8px;
     font-size: 1em;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: var(--surface);
+    color: var(--text);
 }
 
 .todo-input button {
@@ -69,7 +97,7 @@ ul {
 
 li {
     margin-bottom: 4px;
-    border-radius: 4px;
+    border-radius: var(--card-radius);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -77,13 +105,13 @@ li {
 }
 
 li.checked {
-    color: #aaa;
+    color: var(--muted-2);
     text-decoration: line-through;
     order: 9999;
 }
 
 .taskContainer {
-    background: #fff;
+    background: var(--surface);
     display: flex;
     flex-direction: row;
     width: 300px;
@@ -92,6 +120,8 @@ li.checked {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    padding: 8px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
 }
 
 .indentSpacer {
@@ -103,7 +133,7 @@ button.template-btn {
 }
 
 .delete-btn {
-    color: #777777
+    color: var(--muted);
 }
 
 .task-text {
@@ -115,7 +145,7 @@ button.template-btn {
 .move-btn {
     background: transparent;
     border: none;
-    color: #444;
+    color: var(--muted-2);
     font-size: 0.8em;
     padding: 4px 6px;
     cursor: pointer;
@@ -123,32 +153,28 @@ button.template-btn {
 
 .move-btn:focus,
 .delete-btn:focus {
-    outline: 2px solid #b3d4fc;
+    outline: 2px solid var(--focus);
     outline-offset: 2px;
 }
 
-button :hover {
-    filter: brightness(0.85);
+button:hover {
     -webkit-filter: brightness(0.85);
+    filter: brightness(0.85);
     transition: filter .15s ease, -webkit-filter .15s ease;
     will-change: filter;
 }
 
 .templates {
-    display:flex;
-    align-items:center;
-    gap:8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 #todoList {
-    color: #505050
+    color: var(--muted-2);
 }
 
-summary h2 {
-    display: inline;
-    margin: 0 0 0 0.2rem;
-}
-
+summary h2,
 summary h3 {
     display: inline;
     margin: 0 0 0 0.2rem;
@@ -159,15 +185,15 @@ summary {
     transition: background-color 0.2s ease;
     border-radius: 2px;
     padding: 0.8rem 1rem;
-    background-color: #eee;
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
 summary:hover {
-    background-color: #c0c0c0;
+    background-color: rgba(0, 0, 0, 0.06);
 }
 
 summary:active {
-    background-color: #444;
+    background-color: rgba(0, 0, 0, 0.12);
 }
 
 #currentTask {
