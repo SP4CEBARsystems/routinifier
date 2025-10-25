@@ -55,7 +55,7 @@ export class Task {
     renderLi() {
         const li = this.li;
         li.innerHTML = '';
-        if (this.checked) li.classList.add('checked');
+        li.className = this.checked ? 'checked' : '';
         li.addEventListener('click', () => this.toggleTask());
         return li;
     }
