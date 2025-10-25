@@ -38,7 +38,8 @@ export class Task {
             this.indentationLevel = 0;
         }
         TodoList.mainTodoList.save();
-        this.render();
+        // this.render();
+        TodoList.mainTodoList.render();
     }
 
     render() {
