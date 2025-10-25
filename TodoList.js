@@ -1,6 +1,7 @@
 import { Task } from "./Task.js";
 
 export class TodoList {
+    /** @type {TodoList} */
     static mainTodoList;
 
     /**

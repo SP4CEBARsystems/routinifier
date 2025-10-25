@@ -44,12 +44,14 @@ export class Task {
     render() {
         const li = this.renderLi();
         this.renderIndent(li);
-        li.appendChild(this.renderTextSpan());
-        li.appendChild(this.renderMoveUpBtn());
-        li.appendChild(this.renderMoveDownBtn());
-        li.appendChild(this.renderIndentLeftBtn());
-        li.appendChild(this.renderIndentRightBtn());
-        li.appendChild(this.renderDelBtn());
+        const container = this.renderContainer();
+        li.appendChild(container);
+        container.appendChild(this.renderTextSpan());
+        container.appendChild(this.renderMoveUpBtn());
+        container.appendChild(this.renderMoveDownBtn());
+        container.appendChild(this.renderIndentLeftBtn());
+        container.appendChild(this.renderIndentRightBtn());
+        container.appendChild(this.renderDelBtn());
         return li;
     }
 
@@ -57,8 +59,14 @@ export class Task {
         const li = this.li;
         li.innerHTML = '';
         li.className = this.checked ? 'checked' : '';
-        li.addEventListener('click', () => this.toggleTask());
         return li;
+    }
+
+    renderContainer() {
+        const container = document.createElement('div');
+        container.addEventListener('click', () => this.toggleTask());
+        container.classList.add('taskContainer');
+        return container;
     }
 
     /**

@@ -68,20 +68,30 @@ ul {
 }
 
 li {
-    background: #fff;
-    padding: 8px;
     margin-bottom: 4px;
     border-radius: 4px;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
 }
 
 li.checked {
     color: #aaa;
     text-decoration: line-through;
     order: 9999;
+}
+
+.taskContainer {
+    background: #fff;
+    display: flex;
+    flex-direction: row;
+    width: 300px;
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
 }
 
 .indentSpacer {
