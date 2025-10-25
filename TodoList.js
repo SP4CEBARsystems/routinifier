@@ -137,4 +137,11 @@ export class TodoList {
         const top = this.tasks.find(t => !t.checked);
         return top ? top.text : '';
     }
+
+    /** Get top-most task text */
+    checkTopTask() {
+        const top = this.tasks.find(t => !t.checked);
+        if (!top) return;
+        top.checked = true;
+    }
 }

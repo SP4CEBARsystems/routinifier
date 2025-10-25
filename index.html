@@ -21,9 +21,12 @@
                 <button id="longBreakPhase" class="phase-btn">Long Break</button>
             </div>
         </section>
+        <p id="currentTask"></p>
 
-        <h2>Tasks</h2>
-        <section class="todo-container">
+        <details class="todo-container" open>
+            <summary>
+                <h2>Tasks</h2>
+            </summary>
             <div class="templates">
                 <p style="margin:0;">Routines:</p>
                 <button data-template="work" class="template-btn">Work</button>
@@ -36,7 +39,7 @@
             </div>
             <h3>Checked Tasks</h3>
             <ul id="checkedTodoList"></ul>
-        </section>
+        </details>
     </article>
 
     <script type="module" src="main.js"></script>

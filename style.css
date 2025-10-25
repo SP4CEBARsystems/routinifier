@@ -10,6 +10,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 300px;
 }
 
 .timer-container {
@@ -38,12 +39,12 @@ body {
     -ms-user-select: none;
 }
 
-.todo-container {
-    width: 300px;
+h2 {
+    width: 100%;
 }
 
-h2 {
-    width: 300px;
+.todo-container {
+    width: 100%;
 }
 
 .todo-input {
@@ -123,4 +124,34 @@ button :hover {
     display:flex;
     align-items:center;
     gap:8px;
+}
+
+#todoList {
+    color: #505050
+}
+
+summary h2 {
+    display: inline;
+    margin: 0 0 0 0.2rem;
+}
+
+summary {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 2px;
+    padding: 0.8rem 1rem;
+    background-color: #d8d8d8;
+}
+
+summary:hover {
+    background-color: #c0c0c0;
+}
+
+summary:active {
+    background-color: #444;
+}
+
+#currentTask {
+    cursor: pointer;
+    width: 100%;
 }
