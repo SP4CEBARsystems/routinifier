@@ -54,17 +54,30 @@ export class TodoList {
     */
     deleteTask(taskId) {
         const taskIndex = this.tasks.findIndex(element => element.id === taskId);
-        this.tasks.splice(taskIndex, 1);
+        const task = this.tasks[taskIndex];
+        const childCount = task.getChildCount(this.tasks);
+        // console.log(this.tasks[taskIndex], this.tasks, 'children', children);
+        // return;
+        console.log('before this.tasks', this.tasks);
+        if (childCount > 0) {
+            if (!window.confirm(`Are you sure you want to delete the task named "${task.text}" with ${TodoList.pluralFix(childCount, 'subtask', 'subtasks')}`)) return;
+        }
+        this.tasks.splice(taskIndex, childCount + 1);
+        console.log('after this.tasks', this.tasks);
         this.save();
         this.render();
     }
 
-    /** Move a task up in the list */
+    /** Move a task up in the list 
+     * @param {string} taskId 
+    */
     moveTaskUp(taskId) {
         return this.moveTaskByOffset(taskId, -1);
     }
 
-    /** Move a task down in the list */
+    /** Move a task down in the list 
+     * @param {string} taskId 
+    */
     moveTaskDown(taskId) {
         return this.moveTaskByOffset(taskId, 1);
     }
@@ -150,6 +163,9 @@ export class TodoList {
         return topmostTasks;
     }
 
+    // delete sub tasks on delete task
+    // save last modification time, and detect a new session, load session tasks, leave the buttons, load break tasks each break, and remove break tasks after each break
+
     /**
      * 
      * @param {HTMLElement} element the parent DOM element to render to
@@ -178,5 +194,20 @@ export class TodoList {
         const top = this.tasks.find(t => !t.checked);
         if (!top) return;
         top.checked = true;
+    }
+
+    /**
+     * formulates a count with a noun, handling plural and singular nouns, and turning the values zero to twenty into words
+     * @param {number} amount the amount of something
+     * @param {string} singularNoun the singular spelling of the noun to be used when the amount is one
+     * @param {string} pluralNoun the plural spelling of the noun to be used when the amount is not one
+     * @returns {string} a count with a correctly-formatted noun like "five apples" or "one banana" or "no oranges" or "425 kiwis" or 8.5 melons or -1 pears
+     */
+    static pluralFix(amount, singularNoun, pluralNoun) {
+        const numberWords = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty']
+        const isFractional = amount % 1 !== 0;
+        const numberWord = isFractional ? amount : numberWords[amount] ?? amount;
+        const noun = amount === 1 ? singularNoun : pluralNoun;
+        return `${numberWord} ${noun}`;
     }
 }
