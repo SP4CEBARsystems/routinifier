@@ -51,6 +51,30 @@ export class TodoList {
         this.render();
     }
 
+    /** Move a task up in the list */
+    moveTaskUp(taskId) {
+        const idx = this.tasks.findIndex(t => t.id === taskId);
+        if (idx > 0) {
+            const tmp = this.tasks[idx - 1];
+            this.tasks[idx - 1] = this.tasks[idx];
+            this.tasks[idx] = tmp;
+            this.save();
+            this.render();
+        }
+    }
+
+    /** Move a task down in the list */
+    moveTaskDown(taskId) {
+        const idx = this.tasks.findIndex(t => t.id === taskId);
+        if (idx >= 0 && idx < this.tasks.length - 1) {
+            const tmp = this.tasks[idx + 1];
+            this.tasks[idx + 1] = this.tasks[idx];
+            this.tasks[idx] = tmp;
+            this.save();
+            this.render();
+        }
+    }
+
     /** Reorder tasks: unchecked on top */
     reorder() {
         this.tasks.sort((a, b) => a.checked - b.checked);

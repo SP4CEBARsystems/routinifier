@@ -9,7 +9,7 @@ export class Task {
      * @param {string} text 
      * @param {TodoList} list 
      */
-    constructor( text, list ) {
+    constructor(text, list) {
         this.text = text;
         this.checked = false;
         this.id = Task.generateId();
@@ -26,16 +26,31 @@ export class Task {
     }
 
     render() {
+        const li = this.renderLi();
+        li.appendChild(this.renderTextSpan());
+        li.appendChild(this.renderMoveUpBtn());
+        li.appendChild(this.renderMoveDownBtn());
+        li.appendChild(this.renderDelBtn());
+        return li;
+    }
+
+    renderLi() {
         const li = document.createElement('li');
         if (this.checked) li.classList.add('checked');
         li.addEventListener('click', () => this.toggleTask());
+        return li;
+    }
 
-        // Task text (clicking toggles completion)
+    /** Task text (clicking toggles completion) */
+    renderTextSpan() {
         const textSpan = document.createElement('span');
         textSpan.textContent = this.text;
         textSpan.className = 'task-text';
+        return textSpan;
+    }
 
-        // Delete button on the right
+    /** Delete button on the right */
+    renderDelBtn() {
         const delBtn = document.createElement('button');
         delBtn.type = 'button';
         delBtn.className = 'delete-btn';
@@ -46,13 +61,36 @@ export class Task {
             e.stopPropagation();
             TodoList.mainTodoList.deleteTask(this.id);
         });
-
-        li.appendChild(textSpan);
-        li.appendChild(delBtn);
-        return li;
+        return delBtn;
     }
 
-    static generateId(){
+    renderMoveUpBtn() {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'move-btn move-up';
+        btn.title = 'Move up';
+        btn.textContent = '▲';
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            TodoList.mainTodoList.moveTaskUp(this.id);
+        });
+        return btn;
+    }
+
+    renderMoveDownBtn() {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'move-btn move-down';
+        btn.title = 'Move down';
+        btn.textContent = '▼';
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            TodoList.mainTodoList.moveTaskDown(this.id);
+        });
+        return btn;
+    }
+
+    static generateId() {
         return "id" + Math.random().toString(16).slice(2);
     }
 }
