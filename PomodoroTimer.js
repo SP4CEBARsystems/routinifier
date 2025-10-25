@@ -4,12 +4,12 @@ export class PomodoroTimer {
     /** @typedef {{WORK: PomodoroPhase, SHORT_BREAK: PomodoroPhase, LONG_BREAK: PomodoroPhase}} Phases */
     /** @type {Phases} */
     static PHASES = {
-        // WORK: { name: 'Work', duration: 25 },
-        // SHORT_BREAK: { name: 'Short Break', duration: 5 },
-        // LONG_BREAK: { name: 'Long Break', duration: 15 }
-        WORK: { name: 'Work', duration: 25/(60*5) },
-        SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
-        LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
+        WORK: { name: 'Work', duration: 25 },
+        SHORT_BREAK: { name: 'Short Break', duration: 5 },
+        LONG_BREAK: { name: 'Long Break', duration: 15 }
+        // WORK: { name: 'Work', duration: 25/(60*5) },
+        // SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
+        // LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
     };
     
     /** @type {HTMLCanvasElement} */
@@ -179,22 +179,26 @@ export class PomodoroTimer {
 
     /** Draw shrinking pie */
     draw() {
+        const center = {
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2,
+        }
         const ctx = this.ctx;
-        const radius = this.canvas.width / 2 - 10;
+        const radius = center.x - 10;
         const angle = (this.remaining / this.duration) * 2 * Math.PI;
 
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Background circle
         ctx.beginPath();
-        ctx.arc(this.canvas.width / 2, this.canvas.height / 2, radius, 0, 2 * Math.PI);
+        ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI);
         ctx.fillStyle = '#ddd';
         ctx.fill();
 
         // Timer arc
         ctx.beginPath();
-        ctx.moveTo(this.canvas.width / 2, this.canvas.height / 2);
-        ctx.arc(this.canvas.width / 2, this.canvas.height / 2, radius, -Math.PI / 2, -Math.PI / 2 + angle, false);
+        ctx.moveTo(center.x, center.y);
+        ctx.arc(center.x, center.y, radius, -Math.PI / 2, -Math.PI / 2 - angle, true);
         ctx.closePath();
         ctx.fillStyle = '#ff6347';
         ctx.fill();
