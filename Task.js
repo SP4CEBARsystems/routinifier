@@ -7,11 +7,11 @@ export class Task {
     /**
      * 
      * @param {string} text 
-     * @param {TodoList} list 
+     * @param {boolean} isChecked 
      */
-    constructor(text, list) {
+    constructor(text, isChecked = false) {
         this.text = text;
-        this.checked = false;
+        this.checked = isChecked;
         this.id = Task.generateId();
     }
 
