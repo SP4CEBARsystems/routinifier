@@ -51,6 +51,32 @@ export class TodoList {
         this.render();
     }
 
+    /** Move a task up in the list */
+    moveTaskUp(taskId) {
+        return this.moveTaskByOffset(taskId, -1);
+    }
+
+    /** Move a task down in the list */
+    moveTaskDown(taskId) {
+        return this.moveTaskByOffset(taskId, 1);
+    }
+
+    /**
+     * Move a task by an offset (negative = up, positive = down).
+     * @param {string} taskId
+     * @param {number} offset
+     * @returns {boolean} true if moved
+     */
+    moveTaskByOffset(taskId, offset) {
+        const idx = this.tasks.findIndex(t => t.id === taskId);
+        const newIdx = idx + offset;
+        if (idx < 0 || newIdx < 0 || newIdx >= this.tasks.length) return false;
+        [this.tasks[idx], this.tasks[newIdx]] = [this.tasks[newIdx], this.tasks[idx]];
+        this.save();
+        this.render();
+        return true;
+    }
+
     /** Reorder tasks: unchecked on top */
     reorder() {
         this.tasks.sort((a, b) => a.checked - b.checked);
@@ -71,15 +97,31 @@ export class TodoList {
 
     /** Render the tasks */
     render() {
-        const uncheckedTasks = this.tasks.filter(task => !task.checked);
-        const checkedTasks = this.tasks.filter(task => task.checked);
-        this.renderTaskList(this.listElement, uncheckedTasks);
-        this.renderTaskList(this.checkedListElement, checkedTasks);
+        this.renderFiltered(this.listElement, task => !task.checked);
+        this.renderFiltered(this.checkedListElement, task => task.checked);
+    }
+    
+    /**
+     * 
+     * @param {HTMLElement} element the parent DOM element to render to
+     * @param {(task:Task)=>boolean} predicate for Array.prototype.filter() on this.tasks
+     */
+    renderFiltered(element, predicate) {
+        const checkedTasks = this.tasks.filter(predicate);
+        this.renderTaskList(element, checkedTasks);
     }
 
     /**
      * 
-     * @param {HTMLElement} element 
+     * @param {HTMLElement} element the parent DOM element to render to
+     */
+    renderAll(element) {
+        this.renderTaskList(element, this.tasks);
+    }
+
+    /**
+     * 
+     * @param {HTMLElement} element the parent DOM element to render to
      * @param {Task[]} tasks 
      */
     renderTaskList(element, tasks) {

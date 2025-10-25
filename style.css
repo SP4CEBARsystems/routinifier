@@ -87,6 +87,27 @@ button.template-btn {
     color: #777777
 }
 
+.task-text {
+    flex: 1;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.move-btn {
+    background: transparent;
+    border: none;
+    color: #444;
+    font-size: 0.8em;
+    padding: 4px 6px;
+    cursor: pointer;
+}
+
+.move-btn:focus,
+.delete-btn:focus {
+    outline: 2px solid #b3d4fc;
+    outline-offset: 2px;
+}
+
 button :hover {
     filter: brightness(0.85);
     -webkit-filter: brightness(0.85);
