@@ -32,6 +32,11 @@ const todo = new TodoList(todoListEl, checkedTodoListEl);
 TodoList.mainTodoList = todo;
 const templates = new Templates(todo);
 
+console.log(todo.tasks);
+if (todo.tasks.length == 0) {
+    templates.addTemplate('work');
+}
+
 addTaskBtn.addEventListener('click', () => {
     const text = newTaskInput.value.trim();
     if (text) {
