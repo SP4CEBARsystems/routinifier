@@ -24,9 +24,10 @@ export class TodoList {
      * Add a task below
      * @param {string} text
      * @param {boolean} [isChecked] 
+     * @param {number} [indentationLevel] 
      */
-    addTask(text, isChecked) {
-        this.tasks.push(new Task( text, isChecked ));
+    addTask(text, isChecked, indentationLevel) {
+        this.tasks.push(new Task( text, isChecked, indentationLevel ));
         // this.reorder();
         this.save();
         this.render();
@@ -35,9 +36,11 @@ export class TodoList {
     /**
      * Add a task to the top
      * @param {string} text
+     * @param {boolean} [isChecked] 
+     * @param {number} [indentationLevel] 
      */
-    addTaskAbove(text) {
-        this.tasks.unshift(new Task( text, this ));
+    addTaskAbove(text, isChecked, indentationLevel) {
+        this.tasks.unshift(new Task( text, isChecked, indentationLevel  ));
         this.save();
         this.render();
     }
@@ -95,7 +98,7 @@ export class TodoList {
          */
         const tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
         tasks.forEach(task => {
-            this.addTask( task.text, task.checked);
+            this.addTask( task.text, task.checked, task.indentationLevel );
         });
     }
 

@@ -8,11 +8,14 @@ export class Task {
      * 
      * @param {string} text 
      * @param {boolean} isChecked 
+     * @param {number} [indentationLevel=0] 
      */
-    constructor(text, isChecked = false) {
+    constructor(text, isChecked = false, indentationLevel = 0) {
         this.text = text;
         this.checked = isChecked;
+        this.indentationLevel = indentationLevel;
         this.id = Task.generateId();
+        this.li = document.createElement('li');
     }
 
     /**
@@ -25,20 +28,49 @@ export class Task {
         TodoList.mainTodoList.render();
     }
 
+    /**
+     * adds an indent offset to this task's indentation level
+     * @param {number} delta 
+     */
+    addIndent( delta ) {
+        this.indentationLevel += delta;
+        if (this.indentationLevel < 0) {
+            this.indentationLevel = 0;
+        }
+        this.render();
+    }
+
     render() {
         const li = this.renderLi();
+        this.renderIndent(li);
         li.appendChild(this.renderTextSpan());
         li.appendChild(this.renderMoveUpBtn());
         li.appendChild(this.renderMoveDownBtn());
+        li.appendChild(this.renderIndentLeftBtn());
+        li.appendChild(this.renderIndentRightBtn());
         li.appendChild(this.renderDelBtn());
         return li;
     }
 
     renderLi() {
-        const li = document.createElement('li');
+        const li = this.li;
+        li.innerHTML = '';
         if (this.checked) li.classList.add('checked');
         li.addEventListener('click', () => this.toggleTask());
         return li;
+    }
+
+    /**
+     * 
+     * @param {HTMLLIElement} li 
+     */
+    renderIndent(li) {
+        console.log('in', this.indentationLevel);
+        for (let i = 0; i < this.indentationLevel; i++) {
+            const div = document.createElement('div');
+            div.textContent = '>';
+            li.appendChild(div);
+        }
     }
 
     /** Task text (clicking toggles completion) */
@@ -72,6 +104,14 @@ export class Task {
         return this.renderMoveBtn('down');
     }
 
+    renderIndentLeftBtn() {
+        return this.renderIndentBtn('left');
+    }
+
+    renderIndentRightBtn() {
+        return this.renderIndentBtn('right');
+    }
+
     renderMoveBtn(direction) {
         const isUp = direction === 'up';
         const btn = document.createElement('button');
@@ -85,6 +125,22 @@ export class Task {
             const list = TodoList.mainTodoList;
             if (isUp) list.moveTaskUp(this.id);
             else list.moveTaskDown(this.id);
+        });
+        return btn;
+    }
+
+    renderIndentBtn(direction) {
+        const isLeft = direction === 'left';
+        const indentOffset = isLeft ? -1 : 1;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `move-btn move-${direction}`;
+        btn.title = isLeft ? 'Move left' : 'Move right';
+        btn.setAttribute('aria-label', `${isLeft ? 'Move task left' : 'Move task right'} ${this.text}`);
+        btn.textContent = isLeft ? '◀' : '▶';
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.addIndent(indentOffset);
         });
         return btn;
     }
