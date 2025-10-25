@@ -163,9 +163,6 @@ export class TodoList {
         return topmostTasks;
     }
 
-    // delete sub tasks on delete task
-    // save last modification time, and detect a new session, load session tasks, leave the buttons, load break tasks each break, and remove break tasks after each break
-
     /**
      * 
      * @param {HTMLElement} element the parent DOM element to render to
