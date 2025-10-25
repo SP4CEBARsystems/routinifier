@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="timer-container">
+    <article class="container">
+        <h1>Routinify</h1>
+        <h2>Timer</h2>
+        <section class="timer-container">
             <div class="timer-display">
                 <canvas id="pomodoroCanvas" width="200" height="200"></canvas>
                 <div class="timer-text" id="timeDisplay">25:00</div>
@@ -18,10 +20,10 @@
                 <button id="shortBreakPhase" class="phase-btn">Short Break</button>
                 <button id="longBreakPhase" class="phase-btn">Long Break</button>
             </div>
-        </div>
+        </section>
 
-        <div class="todo-container">
-            <h3>Tasks</h3>
+        <h2>Tasks</h2>
+        <section class="todo-container">
             <div class="templates">
                 <p style="margin:0;">Routines:</p>
                 <button data-template="work" class="template-btn">Work</button>
@@ -32,10 +34,10 @@
                 <input type="text" id="newTaskInput" placeholder="Add a new task..." />
                 <button id="addTaskBtn">Add</button>
             </div>
-            <h3>Checked</h3>
+            <h3>Checked Tasks</h3>
             <ul id="checkedTodoList"></ul>
-        </div>
-    </div>
+        </section>
+    </article>
 
     <script type="module" src="main.js"></script>
 </body>

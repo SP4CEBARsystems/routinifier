@@ -42,6 +42,10 @@ body {
     width: 300px;
 }
 
+h2 {
+    width: 300px;
+}
+
 .todo-input {
     display: flex;
     margin-bottom: 10px;
