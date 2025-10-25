@@ -7,15 +7,43 @@ export class PomodoroTimer {
         // WORK: { name: 'Work', duration: 25 },
         // SHORT_BREAK: { name: 'Short Break', duration: 5 },
         // LONG_BREAK: { name: 'Long Break', duration: 15 }
-            WORK: { name: 'Work', duration: 25/(60*5) },
-            SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
-            LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
+        WORK: { name: 'Work', duration: 25/(60*5) },
+        SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
+        LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
     };
-    /** @type {PomodoroPhase} */
-    currentPhase;
-
+    
+    /** @type {HTMLCanvasElement} */
+    canvas
+    
     /** @type {CanvasRenderingContext2D} */
     ctx
+    
+    /** @type {Function|null} */
+    onTick
+    
+    /** @type {Function|null} */
+    onPhaseEnd
+    
+    /** @type {number|null} */
+    interval
+
+    /** @type {PomodoroPhase} */
+    currentPhase;
+    
+    /** @type {number} */
+    duration
+    
+    /** @type {number} */
+    remaining
+    
+    /** @type {number} */
+    workSessionCount
+    
+    /** @type {HTMLAudioElement} */
+    workAlarmSound
+    
+    /** @type {HTMLAudioElement} */
+    breakAlarmSound
 
     /**
      * Creates a Pomodoro timer instance.
@@ -102,8 +130,9 @@ export class PomodoroTimer {
         }
     }
 
-    // Add click event listener to toggle timer
-    // Function to toggle timer state
+    /**
+     *  Function to toggle timer state 
+    */
     toggle() {
         if (this.isRunning()) {
             this.stop();
