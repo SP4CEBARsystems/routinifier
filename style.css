@@ -157,6 +157,10 @@ button.template-btn {
     outline-offset: 2px;
 }
 
+button {
+    cursor: pointer;
+}
+
 button:hover {
     -webkit-filter: brightness(0.85);
     filter: brightness(0.85);
