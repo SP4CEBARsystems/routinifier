@@ -149,7 +149,7 @@ export class PomodoroTimer {
             switch (this.currentPhase.name) {
                 case 'Work': display = `${PomodoroTimer.numberPrefix(this.workSessionCount)} work session`;
                     break;
-                case 'Short Break': display = `${PomodoroTimer.numberPrefix(this.workSessionCount - 1)} break`;
+                case 'Short Break': display = this.workSessionCount > 0 ? `${PomodoroTimer.numberPrefix(this.workSessionCount - 1)} break` : 'break';
                     break;
                 case 'Long Break': display = `enjoy your long break!`;
                     break;
