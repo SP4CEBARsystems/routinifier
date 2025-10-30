@@ -31,10 +31,63 @@ body {
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 300px;
+    /* width: 300px; */
+    /* width: auto; */
+    width: 100%;
+    /* flex-direction: column; */
+    /* align-items: center; */
+    /* display: flex;
+    flex-wrap: wrap;
+    
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2em; */
+
+    display: grid;
+    grid-template-rows: repeat(4 100px);
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    justify-items: center;
+    /* align-items: center; */
+    /* grid-template-areas:
+        "header task"
+        "timer task"
+        "music task"; */
+}
+
+.top {
+    margin-bottom: 1em;
+    /* grid-area: header; */
+    grid-row: span 2;
+    grid-column: span 1;
+}
+
+.taskContainer {
+    /* grid-area: task; */
+    grid-row: span 4;
+    grid-column: span 1;
+}
+
+.timerContainer {
+    /* grid-area: timer; */
+    grid-row: span 1;
+    grid-column: span 1;
+}
+
+.musicContainer {
+    /* grid-area: music; */
+    grid-row: span 1;
+    grid-column: span 1;
+}
+
+/* On larger (desktop/PC) screens make .container a row */
+/* @media (min-width: 1400px) {
+    .container {
+    }
+} */
+
+.container details {
+    max-width: 20em;
+    /* width: 20em; */
 }
 
 .timer-container {
@@ -252,8 +305,4 @@ details:hover {
 .video-wrap {
   width: 100%;
   max-width: 600px;
-}
-
-.top {
-    margin-bottom: 1em;
 }
