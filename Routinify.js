@@ -137,8 +137,9 @@ export default class Routinify {
         // Download example
         document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
 
+        const textInputElement = document.getElementById('textInput');
         // Upload example
-        document.getElementById('textInput')?.addEventListener('change', async (event) => {
+        textInputElement?.addEventListener('change', async (event) => {
             const file = event?.target?.files[0];
             if (file) {
                 try {
@@ -146,6 +147,22 @@ export default class Routinify {
                 } catch (err) {
                     console.error(err.message);
                 }
+            }
+        });
+
+
+        // textInputElement?.click();
+
+        // Keyboard shortcuts: Ctrl/Cmd+S to save, Ctrl/Cmd+O to open file dialog
+        window.addEventListener('keydown', (e) => {
+            const key = e.key?.toLowerCase();
+            if (!(e.ctrlKey || e.metaKey)) return;
+            if (key === 's') {
+                e.preventDefault();
+                this.saveFile();
+            } else if (key === 'o') {
+                e.preventDefault();
+                textInputElement?.click();
             }
         });
     }
