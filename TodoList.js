@@ -186,9 +186,12 @@ export class TodoList {
 
     /** Render the tasks */
     render() {
-        this.renderFiltered(this.listElement, task => !task.checked);
-        this.renderFiltered(this.checkedListElement, task => task.checked);
+        const uncheckedTasks = this.renderFiltered(this.listElement, task => !task.checked);
+        const checkedTasks = this.renderFiltered(this.checkedListElement, task => task.checked);
         this.renderFirstTaskSummary(TodoList.firstTaskSummary);
+        document.getElementById('taskDetailSummary').textContent = this.getTopTaskText();
+        document.getElementById('moreTasksDetailSummary').textContent = `(${uncheckedTasks.length})`;
+        document.getElementById('CompletedtasksDetailSummary').textContent = `(${checkedTasks.length})`;
     }
     
     /**
@@ -199,6 +202,7 @@ export class TodoList {
     renderFiltered(element, predicate) {
         const checkedTasks = this.tasks.filter(predicate);
         this.renderTaskList(element, checkedTasks);
+        return checkedTasks;
     }
 
     /**
