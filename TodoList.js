@@ -34,9 +34,10 @@ export class TodoList {
      * @param {string} text
      * @param {boolean} [isChecked] 
      * @param {number} [indentationLevel] 
+     * @param {string} [type] 
      */
-    addTask(text, isChecked, indentationLevel) {
-        this.tasks.push(new Task( text, isChecked, indentationLevel ));
+    addTask(text, isChecked, indentationLevel, type) {
+        this.tasks.push(new Task( text, isChecked, indentationLevel, type ));
         // this.reorder();
         this.save();
         this.render();
@@ -47,9 +48,10 @@ export class TodoList {
      * @param {string} text
      * @param {boolean} [isChecked] 
      * @param {number} [indentationLevel] 
+     * @param {string} [type] 
      */
-    addTaskAbove(text, isChecked, indentationLevel) {
-        this.tasks.unshift(new Task( text, isChecked, indentationLevel  ));
+    addTaskAbove(text, isChecked, indentationLevel, type) {
+        this.tasks.unshift(new Task( text, isChecked, indentationLevel, type ));
         this.save();
         this.render();
     }
@@ -174,7 +176,7 @@ export class TodoList {
      */
     setTasks(tasks) {
         tasks.forEach(task => {
-            this.addTask( task.text, task.checked, task.indentationLevel );
+            this.addTask( task.text, task.checked, task.indentationLevel, task.type );
         });
     }
 
