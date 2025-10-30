@@ -210,6 +210,14 @@ export class Task {
         return this.getChildren(taskList, 0, hasToBeChecked).length;
     }
 
+    getExportObject() {
+        return {
+            checked: this.checked,
+            indentationLevel: this.indentationLevel,
+            text: this.text,
+        };
+    }
+
     static generateId() {
         return "id" + Math.random().toString(16).slice(2);
     }

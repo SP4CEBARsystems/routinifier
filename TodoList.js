@@ -108,8 +108,15 @@ export class TodoList {
         this.tasks.sort((a, b) => a.checked - b.checked);
     }
 
+    getExportObject() {
+        return {
+            tasks: this.tasks.map(task => task.getExportObject()),
+            version: this.version,
+        };
+    }
+
     getJson() {
-        return JSON.stringify(this.tasks);
+        return JSON.stringify(this.getExportObject());
     }
 
     /** Save to localStorage */
