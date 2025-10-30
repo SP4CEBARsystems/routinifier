@@ -103,17 +103,39 @@ export class TodoList {
         this.tasks.sort((a, b) => a.checked - b.checked);
     }
 
+    getJson() {
+        return JSON.stringify(this.tasks);
+    }
+
     /** Save to localStorage */
     save() {
-        localStorage.setItem('todoTasks', JSON.stringify(this.tasks));
+        const jsonTaskList = this.getJson();
+        localStorage.setItem('todoTasks', jsonTaskList);
     }
 
     /** Load from localStorage */
     load() {
-        /**
-         * @type {Task[]}
-         */
-        const tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+        this.setJson(localStorage.getItem('todoTasks'));
+    }
+    
+    /**
+     * 
+     * @param {string} json 
+    */
+   setJson(json) {
+        const tasks = JSON.parse(json) || [];
+        // VersionNumber.checkVersion(tasks.version);
+        // if (tasks.version >= TodoList.version) {
+        //     window.alert(`loading an old file`);
+        // }
+        this.setTasks(tasks);
+    }
+
+    /**
+     * 
+     * @param {Task[]} tasks
+     */
+    setTasks(tasks) {
         tasks.forEach(task => {
             this.addTask( task.text, task.checked, task.indentationLevel );
         });
