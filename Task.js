@@ -1,3 +1,4 @@
+import Routinify from "./Routinify.js";
 import { TodoList } from "./TodoList.js";
 
 export class Task {
@@ -27,7 +28,7 @@ export class Task {
         this.checked = !this.checked;
         this.getAllChildren(TodoList.mainTodoList.tasks).forEach(task => task.checked = this.checked);
         // this.reorder();
-        TodoList.mainTodoList.save();
+        Routinify.instance.save();
         TodoList.mainTodoList.render();
     }
 
@@ -40,7 +41,7 @@ export class Task {
         if (this.indentationLevel < 0) {
             this.indentationLevel = 0;
         }
-        TodoList.mainTodoList.save();
+        Routinify.instance.save();
         // this.render();
         TodoList.mainTodoList.render();
     }
@@ -126,6 +127,11 @@ export class Task {
         return this.renderIndentBtn('right');
     }
 
+    /**
+     * 
+     * @param {'up'|'down'} direction 
+     * @returns {HTMLButtonElement}
+     */
     renderMoveBtn(direction) {
         const isUp = direction === 'up';
         const btn = document.createElement('button');
@@ -143,6 +149,11 @@ export class Task {
         return btn;
     }
 
+    /**
+     * 
+     * @param {'left'|'right'} direction 
+     * @returns {HTMLButtonElement}
+     */
     renderIndentBtn(direction) {
         const isLeft = direction === 'left';
         const indentOffset = isLeft ? -1 : 1;
