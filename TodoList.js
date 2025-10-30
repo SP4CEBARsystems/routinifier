@@ -188,9 +188,9 @@ export class TodoList {
     render() {
         const uncheckedTasks = this.renderFiltered(this.listElement, task => !task.checked);
         const checkedTasks = this.renderFiltered(this.checkedListElement, task => task.checked);
-        this.renderFirstTaskSummary(TodoList.firstTaskSummary);
+        const summaryTasks = this.renderFirstTaskSummary(TodoList.firstTaskSummary);
         document.getElementById('taskDetailSummary').textContent = this.getTopTaskText();
-        document.getElementById('moreTasksDetailSummary').textContent = `(${uncheckedTasks.length})`;
+        document.getElementById('moreTasksDetailSummary').textContent = `(${uncheckedTasks.length - summaryTasks.length})`;
         document.getElementById('CompletedtasksDetailSummary').textContent = `(${checkedTasks.length})`;
     }
     
@@ -218,7 +218,9 @@ export class TodoList {
      * @param {HTMLElement} element 
      */
     renderFirstTaskSummary(element) {
-        this.renderTaskList(element, this.getFirstTaskSummary());
+        const firstTaskSummary = this.getFirstTaskSummary();
+        this.renderTaskList(element, firstTaskSummary);
+        return firstTaskSummary;
     }
 
     getFirstTaskSummary() {
