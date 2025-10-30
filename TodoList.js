@@ -1,3 +1,4 @@
+import Routinify from "./Routinify.js";
 import { Task } from "./Task.js";
 import { TextFileHandler } from "./TextFileHandler.js";
 // import VersionNumber from "./VersionNumber.js";
@@ -8,8 +9,6 @@ export class TodoList {
 
     /** @type {HTMLElement} */
     static firstTaskSummary;
-
-    static version = 1;
 
     /**
      * @type {Task[]}
@@ -22,11 +21,8 @@ export class TodoList {
      * @param {HTMLElement} checkedListElement
      */
     constructor(listElement, checkedListElement) {
-        this.version = TodoList.version;
         this.listElement = listElement;
         this.checkedListElement = checkedListElement;
-        this.load();
-        this.render();
     }
 
     /**
@@ -39,7 +35,7 @@ export class TodoList {
     addTask(text, isChecked, indentationLevel, type) {
         this.tasks.push(new Task( text, isChecked, indentationLevel, type ));
         // this.reorder();
-        this.save();
+        Routinify.instance.save();
         this.render();
     }
 
@@ -52,7 +48,7 @@ export class TodoList {
      */
     addTaskAbove(text, isChecked, indentationLevel, type) {
         this.tasks.unshift(new Task( text, isChecked, indentationLevel, type ));
-        this.save();
+        Routinify.instance.save();
         this.render();
     }
 
@@ -71,7 +67,7 @@ export class TodoList {
         }
         this.tasks.splice(taskIndex, childCount + 1);
         console.log('after this.tasks', this.tasks);
-        this.save();
+        Routinify.instance.save();
         this.render();
     }
 
@@ -100,74 +96,18 @@ export class TodoList {
         const newIdx = idx + offset;
         if (idx < 0 || newIdx < 0 || newIdx >= this.tasks.length) return false;
         [this.tasks[idx], this.tasks[newIdx]] = [this.tasks[newIdx], this.tasks[idx]];
-        this.save();
+        Routinify.instance.save();
         this.render();
         return true;
     }
 
     /** Reorder tasks: unchecked on top */
     reorder() {
-        this.tasks.sort((a, b) => a.checked - b.checked);
+        this.tasks.sort((a, b) => (a.checked ?1:0) - (b.checked ?1:0));
     }
 
     getExportObject() {
-        return {
-            version: this.version,
-            tasks: this.tasks.map(task => task.getExportObject()),
-        };
-    }
-
-    getJson() {
-        return JSON.stringify(this.getExportObject());
-    }
-
-    /** Save to localStorage */
-    save() {
-        const jsonTaskList = this.getJson();
-        localStorage.setItem('todoTasks', jsonTaskList);
-    }
-    
-    /** Save to file download */
-    saveFile() {
-        const jsonTaskList = this.getJson();
-        TextFileHandler.download(jsonTaskList, `routinify-tasks-v${TodoList.version}.json`);
-    }
-
-    /** Load from localStorage */
-    load() {
-        this.setJson(localStorage.getItem('todoTasks'));
-    }
-
-    /** Load from file upload 
-     * @param {File} file 
-    */
-    async loadFile(file) {
-        const isTaskListValuable = this.tasks.length > 0;
-        if (isTaskListValuable) {
-            if (!window.confirm('are you sure you want to replace your tasks with the tasks from the file?')) return;
-        }
-        this.clear();
-        const json = await TextFileHandler.upload(file);
-        console.log('File contents:\n', json);
-        this.setJson(json);
-    }
-
-    clear() {
-        this.tasks = [];
-    }
-    
-    /**
-     * 
-     * @param {string} json 
-    */
-    setJson(json) {
-        const data = TodoList.isDefined(json) ? JSON.parse(json) ?? [] : [];
-        const tasks = data.tasks;
-        // VersionNumber.checkVersion(tasks.version);
-        // if (tasks.version >= TodoList.version) {
-        //     window.alert(`loading an old file`);
-        // }
-        this.setTasks(tasks);
+        return this.tasks.map(task => task.getExportObject());
     }
 
     /**
@@ -175,9 +115,19 @@ export class TodoList {
      * @param {Task[]} tasks
      */
     setTasks(tasks) {
+        const isTaskListValuable = this.tasks.length > 0;
+        if (isTaskListValuable) {
+            if (!window.confirm('are you sure you want to replace your tasks with the tasks from the file?')) return;
+        }
+        this.clear();
         tasks.forEach(task => {
             this.addTask( task.text, task.checked, task.indentationLevel, task.type );
         });
+        this.render();
+    }
+
+    clear() {
+        this.tasks = [];
     }
 
     /** Render the tasks */
@@ -264,7 +214,7 @@ export class TodoList {
      */
     removeType(filterType) {
         this.tasks = this.tasks.filter(task => task.type !== filterType);
-        this.save();
+        Routinify.instance.save();
         this.render();
     }
 

@@ -1,14 +1,22 @@
 import { PomodoroTimer } from "./PomodoroTimer.js";
 import { Templates } from "./Templates.js";
+import { TextFileHandler } from "./TextFileHandler.js";
 import { TodoList } from "./TodoList.js";
 
 export default class Routinify {
+    /** @type {Routinify} */
+    static instance;
+
+    static version = 1;
+
     constructor() {
-        const canvas = document.getElementById('pomodoroCanvas');
+        if (!Routinify.instance) Routinify.instance = this;
+        this.version = Routinify.version;
+        const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('pomodoroCanvas'));
         const timeDisplay = document.getElementById('timeDisplay');
         const todoListEl = document.getElementById('todoList');
         const checkedTodoListEl = document.getElementById('checkedTodoList');
-        const newTaskInput = document.getElementById('newTaskInput');
+        const newTaskInput = /** @type {HTMLInputElement} */ (document.getElementById('newTaskInput'));
         const addTaskBtn = document.getElementById('addTaskBtn');
         const phaseButtons = {
             work: document.getElementById('workPhase'),
@@ -20,6 +28,9 @@ export default class Routinify {
             throw new Error('no currentTaskEl!')
         }
         TodoList.firstTaskSummary = currentTaskEl;
+
+        this.sessionFocusElement = document.getElementById('sessionFocus');
+        this.sessionFocusElement?.addEventListener('change', this.saveSessionFocus.bind(this));
 
         const todo = new TodoList(todoListEl, checkedTodoListEl);
         this.todo = todo;
@@ -46,24 +57,26 @@ export default class Routinify {
         });
         this.timer = timer;
 
+        this.load();
+
         console.log(todo.tasks);
         if (todo.tasks.length == 0) {
             templates.addTemplate('work');
         }
 
-        addTaskBtn.addEventListener('click', () => {
-            const text = newTaskInput.value.trim();
+        addTaskBtn?.addEventListener('click', () => {
+            const text = newTaskInput?.value?.trim();
             if (text) {
                 todo.addTask(text);
                 newTaskInput.value = '';
             }
         });
 
-        newTaskInput.addEventListener('keydown', (e) => {
+        newTaskInput?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') addTaskBtn.click();
         });
 
-        // currentTaskEl.addEventListener('click', () => {
+        // currentTaskEl?.addEventListener('click', () => {
         //     todo.checkTopTask();
         //     todo.renderFirstTaskSummary(currentTaskEl);
         //     // currentTaskEl.textContent = todo.getTopTask();
@@ -72,51 +85,142 @@ export default class Routinify {
         // });
 
         document.querySelectorAll('.template-btn').forEach(btn => {
-            btn.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
+            btn?.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
         });
 
         timer.draw();
 
         // Add click event listeners to both canvas and time display
         const toggle = timer.toggle.bind(timer);
-        canvas.addEventListener('click', toggle);
-        timeDisplay.addEventListener('click', toggle);
+        canvas?.addEventListener('click', toggle);
+        timeDisplay?.addEventListener('click', toggle);
 
         // Setup phase button handlers
         function updatePhaseButtons(activePhase) {
             Object.entries(phaseButtons).forEach(([phase, button]) => {
-                button.classList.toggle('active', phase === activePhase);
+                button?.classList.toggle('active', phase === activePhase);
             });
         }
 
-        phaseButtons.work.addEventListener('click', () => {
+        phaseButtons.work?.addEventListener('click', () => {
             timer.switchPhase(PomodoroTimer.PHASES.WORK);
             updatePhaseButtons('work');
         });
 
-        phaseButtons.shortBreak.addEventListener('click', () => {
+        phaseButtons.shortBreak?.addEventListener('click', () => {
             timer.switchPhase(PomodoroTimer.PHASES.SHORT_BREAK);
             updatePhaseButtons('shortBreak');
         });
 
-        phaseButtons.longBreak.addEventListener('click', () => {
+        phaseButtons.longBreak?.addEventListener('click', () => {
             timer.switchPhase(PomodoroTimer.PHASES.LONG_BREAK);
             updatePhaseButtons('longBreak');
         });
 
         // Download example
-        document.getElementById('downloadTextBtn').addEventListener('click', todo.saveFile.bind(todo));
+        document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
 
         // Upload example
-        document.getElementById('textInput').addEventListener('change', async (event) => {
-            const file = event.target.files[0];
+        document.getElementById('textInput')?.addEventListener('change', async (event) => {
+            const file = event?.target?.files[0];
             if (file) {
                 try {
-                    await todo.loadFile(file);
+                    await this.loadFile(file);
                 } catch (err) {
                     console.error(err.message);
                 }
             }
         });
+    }
+
+    /**
+     * @param {InputEvent} event 
+     */
+    saveSessionFocus(event) {
+        const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+        localStorage.setItem('sessionFocus', input?.value ?? '');
+    }
+
+    /**
+     * 
+     * @typedef {{version: number, focus: string, tasks: any[]}} RoutinifierExport
+     * @returns {RoutinifierExport}
+     */
+    getExportObject() {
+        return {
+            version: this.version,
+            focus: this.getSessionFocus(),
+            tasks: this.todo.getExportObject(),
+        };
+    }
+
+    getJson() {
+        return JSON.stringify(this.getExportObject());
+    }
+
+    /** Save to localStorage */
+    save() {
+        const jsonTaskList = this.getJson();
+        localStorage.setItem('todoTasks', jsonTaskList);
+    }
+    
+    /** Save to file download */
+    saveFile() {
+        const jsonTaskList = this.getJson();
+        TextFileHandler.download(jsonTaskList, `routinify-tasks-v${Routinify.version}.json`);
+    }
+
+    /** Load from localStorage */
+    load() {
+        this.setJson(localStorage.getItem('todoTasks'));
+        const loadedSessionFocus = localStorage.getItem('sessionFocus');
+        this.setSessionFocus(loadedSessionFocus);
+    }
+
+    /**
+     * 
+     * @param {string|null} loadedSessionFocus 
+     */
+    setSessionFocus(loadedSessionFocus) {
+        if (loadedSessionFocus) this.sessionFocusElement.value = loadedSessionFocus;
+    }
+
+    /**
+     * 
+     * @returns {string}
+     */
+    getSessionFocus() {
+        return this.sessionFocusElement?.value ?? '';
+    }
+
+    /** Load from file upload 
+     * @param {File} file 
+    */
+    async loadFile(file) {
+        const json = await TextFileHandler.upload(file);
+        console.log('File contents:\n', json);
+        this.setJson(json);
+    }
+    
+    /**
+     * 
+     * @param {string} json 
+    */
+    setJson(json) {
+        const data = TodoList.isDefined(json) ? JSON.parse(json) ?? [] : [];
+        // VersionNumber.checkVersion(tasks.version);
+        // if (tasks.version >= Routinify.version) {
+        //     window.alert(`loading an old file`);
+        // }
+        this.setObject(data);
+    }
+
+    /**
+     * 
+     * @param {RoutinifierExport} data 
+     */
+    setObject(data) {
+        this.setSessionFocus(data.focus);
+        this.todo.setTasks(data.tasks);
     }
 }
