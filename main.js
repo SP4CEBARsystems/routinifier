@@ -93,4 +93,18 @@ function main() {
         updatePhaseButtons('longBreak');
     });
 
+    // Download example
+    document.getElementById('downloadTextBtn').addEventListener('click', todo.saveFile.bind(todo));
+
+    // Upload example
+    document.getElementById('textInput').addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            try {
+                await todo.loadFile(file);
+            } catch (err) {
+                console.error(err.message);
+            }
+        }
+    });
 }

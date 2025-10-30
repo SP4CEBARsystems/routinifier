@@ -112,10 +112,34 @@ export class TodoList {
         const jsonTaskList = this.getJson();
         localStorage.setItem('todoTasks', jsonTaskList);
     }
+    
+    /** Save to file download */
+    saveFile() {
+        const jsonTaskList = this.getJson();
+        TextFileHandler.download(jsonTaskList, `routinify-tasks-v${TodoList.version}.json`);
+    }
 
     /** Load from localStorage */
     load() {
         this.setJson(localStorage.getItem('todoTasks'));
+    }
+
+    /** Load from file upload 
+     * @param {File} file 
+    */
+    async loadFile(file) {
+        const isTaskListValuable = this.tasks.length > 0;
+        if (isTaskListValuable) {
+            if (!window.confirm('are you sure you want to replace your tasks with the tasks from the file?')) return;
+        }
+        this.clear();
+        const json = await TextFileHandler.upload(file);
+        console.log('File contents:\n', json);
+        this.setJson(json);
+    }
+
+    clear() {
+        this.tasks = [];
     }
     
     /**
