@@ -1,4 +1,6 @@
 import { Task } from "./Task.js";
+import { TextFileHandler } from "./TextFileHandler.js";
+// import VersionNumber from "./VersionNumber.js";
 
 export class TodoList {
     /** @type {TodoList} */
@@ -6,6 +8,8 @@ export class TodoList {
 
     /** @type {HTMLElement} */
     static firstTaskSummary;
+
+    static version = 1;
 
     /**
      * @type {Task[]}
@@ -18,6 +22,7 @@ export class TodoList {
      * @param {HTMLElement} checkedListElement
      */
     constructor(listElement, checkedListElement) {
+        this.version = TodoList.version;
         this.listElement = listElement;
         this.checkedListElement = checkedListElement;
         this.load();
