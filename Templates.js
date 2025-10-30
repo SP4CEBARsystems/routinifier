@@ -46,8 +46,16 @@ export class Templates {
      */
     addTemplate(templateName) {
         const templateType = `routine-${templateName}`;
-        const tasks = [...(this.templates[templateName] ?? [])];
+        const tasks = [...(this.doesTemplateExist(templateName) ? this.templates[templateName] : [])];
         tasks.reverse().forEach(t => this.todoList.addTaskAbove(t, false, 1, templateType));
         this.todoList.addTaskAbove(`${templateName} routine`, false, 0, templateType);
+    }
+
+    /**
+     * @param {string} templateName 
+     * @returns {boolean} true if the template exists, false otherwise
+     */
+    doesTemplateExist(templateName) {
+        return Object.keys(this.templates).includes(templateName);
     }
 }
