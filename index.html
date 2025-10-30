@@ -16,25 +16,6 @@
             <label for="session focus">Session Focus:</label>
             <input type="text" name="session focus" title="session focus" placeholder="What should you focus on today?" id="sessionFocus"></input>
         </section>
-        <details open>
-            <summary>
-                <div>
-                    <h2>Timer</h2>
-                    <p id="timerDetailSummary"></p>
-                </div>
-            </summary>
-            <section class="timer-container">
-                <div class="timer-display">
-                    <canvas id="pomodoroCanvas" width="200" height="200"></canvas>
-                    <div class="timer-text" id="timeDisplay">25:00</div>
-                </div>
-                <div class="phase-controls">
-                    <button id="workPhase" class="phase-btn active">Work</button>
-                    <button id="shortBreakPhase" class="phase-btn">Short Break</button>
-                    <button id="longBreakPhase" class="phase-btn">Long Break</button>
-                </div>
-            </section>
-        </details>
         
         <details open>
             <summary>
@@ -48,7 +29,7 @@
             <details class="todo-container">
                 <summary>
                     <div>
-                        <h3>More</h3>
+                        <h3>More Tasks</h3>
                         <p id="moreTasksDetailSummary"></p>
                     </div>
                 </summary>
@@ -71,13 +52,33 @@
                 <details>
                     <summary>
                         <div>
-                            <h3>Completed</h3>
+                            <h3>Completed Tasks</h3>
                             <p id="CompletedtasksDetailSummary"></p>
                         </div>
                     </summary>
                     <ul id="checkedTodoList"></ul>
                 </details>
             </details>
+        </details>
+
+        <details open>
+            <summary>
+                <div>
+                    <h2>Timer</h2>
+                    <p id="timerDetailSummary"></p>
+                </div>
+            </summary>
+            <section class="timer-container">
+                <div class="timer-display">
+                    <canvas id="pomodoroCanvas" width="200" height="200"></canvas>
+                    <div class="timer-text" id="timeDisplay">25:00</div>
+                </div>
+                <div class="phase-controls">
+                    <button id="workPhase" class="phase-btn active">Work</button>
+                    <button id="shortBreakPhase" class="phase-btn">Short Break</button>
+                    <button id="longBreakPhase" class="phase-btn">Long Break</button>
+                </div>
+            </section>
         </details>
         
         <details open>
