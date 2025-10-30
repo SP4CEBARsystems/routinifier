@@ -143,13 +143,17 @@ export class PomodoroTimer {
 
     updateSummaryDisplay() {
         let display = '';
-        switch (this.currentPhase.name) {
-            case 'Work': display = `${PomodoroTimer.numberPrefix(this.workSessionCount)} work session`;
-                break;
-            case 'Short Break': display = `${PomodoroTimer.numberPrefix(this.workSessionCount - 1)} break`;
-                break;
-            case 'Long Break': display = `enjoy your long break!`;
-                break;
+        if (!this.isRunning()) {
+            display = 'timer paused';
+        } else {
+            switch (this.currentPhase.name) {
+                case 'Work': display = `${PomodoroTimer.numberPrefix(this.workSessionCount)} work session`;
+                    break;
+                case 'Short Break': display = `${PomodoroTimer.numberPrefix(this.workSessionCount - 1)} break`;
+                    break;
+                case 'Long Break': display = `enjoy your long break!`;
+                    break;
+            }
         }
         document.getElementById('timerDetailSummary').textContent = display;
     }
@@ -182,6 +186,7 @@ export class PomodoroTimer {
                 if (this.onTick) this.onTick(this.remaining);
             }
         }, 1000);
+        this.updateSummaryDisplay()
     }
 
     /** Stop the timer */
@@ -194,6 +199,7 @@ export class PomodoroTimer {
             this.draw();
             if (this.onTick) this.onTick(this.remaining);
         }
+        this.updateSummaryDisplay()
     }
 
     /**
