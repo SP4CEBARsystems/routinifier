@@ -1,3 +1,4 @@
+import MusicDisplay from "./MusicDisplay.js";
 import { PomodoroTimer } from "./PomodoroTimer.js";
 import { Templates } from "./Templates.js";
 import { TextFileHandler } from "./TextFileHandler.js";
@@ -165,6 +166,8 @@ export default class Routinify {
                 textInputElement?.click();
             }
         });
+
+        MusicDisplay.init();
     }
 
     /**
