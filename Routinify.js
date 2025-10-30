@@ -7,7 +7,9 @@ export default class Routinify {
     /** @type {Routinify} */
     static instance;
 
-    static version = 1;
+    static oldestSupportedVersion = 1.1;
+
+    static version = 1.1;
 
     /**
      * @type {number}
@@ -227,6 +229,14 @@ export default class Routinify {
     */
     setJson(json) {
         const data = TodoList.isDefined(json) ? JSON.parse(json) ?? [] : [];
+        if (data.version < Routinify.oldestSupportedVersion) {
+            console.warn('loaded data too old');
+            return;
+        }
+        if (data.version > Routinify.version) {
+            console.warn('loaded data too new');
+            return;
+        }
         // VersionNumber.checkVersion(tasks.version);
         // if (tasks.version >= Routinify.version) {
         //     window.alert(`loading an old file`);

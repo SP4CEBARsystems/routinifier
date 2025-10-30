@@ -112,9 +112,10 @@ export class TodoList {
 
     /**
      * 
-     * @param {Task[]} tasks
+     * @param {Task[] | undefined} tasks
      */
     setTasks(tasks) {
+        if (tasks === undefined) return;
         const isTaskListValuable = this.tasks.length > 0;
         if (isTaskListValuable) {
             if (!window.confirm('are you sure you want to replace your tasks with the tasks from the file?')) return;
