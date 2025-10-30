@@ -194,6 +194,7 @@ summary div {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 1em;
 }
 
 summary p {
@@ -215,6 +216,18 @@ summary:active {
 
 details {
     width: 100%;
+    margin-bottom: 0.5em;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0 1em;
+    border-radius: 0.5em;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+    will-change: box-shadow, transform;
+}
+
+details:hover {
+    box-shadow: 0 12px 36px rgba(2, 6, 23, 0.12);
+    transform: translateY(-2px);
 }
 
 /* Set your aspect ratio */
@@ -239,4 +252,8 @@ details {
 .video-wrap {
   width: 100%;
   max-width: 600px;
+}
+
+.top {
+    margin-bottom: 1em;
 }
