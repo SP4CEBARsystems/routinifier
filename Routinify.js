@@ -29,6 +29,9 @@ export default class Routinify {
         }
         TodoList.firstTaskSummary = currentTaskEl;
 
+        this.sessionFocusElement = document.getElementById('sessionFocus');
+        this.sessionFocusElement?.addEventListener('change', this.saveSessionFocus.bind(this));
+
         const todo = new TodoList(todoListEl, checkedTodoListEl);
         this.todo = todo;
         TodoList.mainTodoList = todo;
@@ -130,9 +133,23 @@ export default class Routinify {
         });
     }
 
+    /**
+     * @param {InputEvent} event 
+     */
+    saveSessionFocus(event) {
+        const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+        localStorage.setItem('sessionFocus', input?.value ?? '');
+    }
+
+    /**
+     * 
+     * @typedef {{version: number, focus: string, tasks: any[]}} RoutinifierExport
+     * @returns {RoutinifierExport}
+     */
     getExportObject() {
         return {
             version: this.version,
+            focus: this.getSessionFocus(),
             tasks: this.todo.getExportObject(),
         };
     }
@@ -156,6 +173,24 @@ export default class Routinify {
     /** Load from localStorage */
     load() {
         this.setJson(localStorage.getItem('todoTasks'));
+        const loadedSessionFocus = localStorage.getItem('sessionFocus');
+        this.setSessionFocus(loadedSessionFocus);
+    }
+
+    /**
+     * 
+     * @param {string|null} loadedSessionFocus 
+     */
+    setSessionFocus(loadedSessionFocus) {
+        if (loadedSessionFocus) this.sessionFocusElement.value = loadedSessionFocus;
+    }
+
+    /**
+     * 
+     * @returns {string}
+     */
+    getSessionFocus() {
+        return this.sessionFocusElement?.value ?? '';
     }
 
     /** Load from file upload 
@@ -173,11 +208,19 @@ export default class Routinify {
     */
     setJson(json) {
         const data = TodoList.isDefined(json) ? JSON.parse(json) ?? [] : [];
-        const tasks = data.tasks;
         // VersionNumber.checkVersion(tasks.version);
         // if (tasks.version >= Routinify.version) {
         //     window.alert(`loading an old file`);
         // }
-        this.todo.setTasks(tasks);
+        this.setObject(data);
+    }
+
+    /**
+     * 
+     * @param {RoutinifierExport} data 
+     */
+    setObject(data) {
+        this.setSessionFocus(data.focus);
+        this.todo.setTasks(data.tasks);
     }
 }
