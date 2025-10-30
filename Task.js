@@ -9,13 +9,15 @@ export class Task {
      * @param {string} text 
      * @param {boolean} isChecked 
      * @param {number} [indentationLevel=0] 
+     * @param {string} [type='user'] 
      */
-    constructor(text, isChecked = false, indentationLevel = 0) {
+    constructor(text, isChecked = false, indentationLevel = 0, type = 'user') {
         this.text = text;
         this.checked = isChecked;
         this.indentationLevel = indentationLevel;
         this.id = Task.generateId();
         this.li = document.createElement('li');
+        this.type = type;
     }
 
     /**
@@ -208,6 +210,15 @@ export class Task {
      */
     getChildCount(taskList, hasToBeChecked){
         return this.getChildren(taskList, 0, hasToBeChecked).length;
+    }
+
+    getExportObject() {
+        return {
+            checked: this.checked,
+            indentationLevel: this.indentationLevel,
+            text: this.text,
+            type: this.type,
+        };
     }
 
     static generateId() {

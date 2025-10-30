@@ -1,4 +1,6 @@
 import { Task } from "./Task.js";
+import { TextFileHandler } from "./TextFileHandler.js";
+// import VersionNumber from "./VersionNumber.js";
 
 export class TodoList {
     /** @type {TodoList} */
@@ -6,6 +8,8 @@ export class TodoList {
 
     /** @type {HTMLElement} */
     static firstTaskSummary;
+
+    static version = 1;
 
     /**
      * @type {Task[]}
@@ -18,6 +22,7 @@ export class TodoList {
      * @param {HTMLElement} checkedListElement
      */
     constructor(listElement, checkedListElement) {
+        this.version = TodoList.version;
         this.listElement = listElement;
         this.checkedListElement = checkedListElement;
         this.load();
@@ -29,9 +34,10 @@ export class TodoList {
      * @param {string} text
      * @param {boolean} [isChecked] 
      * @param {number} [indentationLevel] 
+     * @param {string} [type] 
      */
-    addTask(text, isChecked, indentationLevel) {
-        this.tasks.push(new Task( text, isChecked, indentationLevel ));
+    addTask(text, isChecked, indentationLevel, type) {
+        this.tasks.push(new Task( text, isChecked, indentationLevel, type ));
         // this.reorder();
         this.save();
         this.render();
@@ -42,9 +48,10 @@ export class TodoList {
      * @param {string} text
      * @param {boolean} [isChecked] 
      * @param {number} [indentationLevel] 
+     * @param {string} [type] 
      */
-    addTaskAbove(text, isChecked, indentationLevel) {
-        this.tasks.unshift(new Task( text, isChecked, indentationLevel  ));
+    addTaskAbove(text, isChecked, indentationLevel, type) {
+        this.tasks.unshift(new Task( text, isChecked, indentationLevel, type ));
         this.save();
         this.render();
     }
@@ -103,19 +110,73 @@ export class TodoList {
         this.tasks.sort((a, b) => a.checked - b.checked);
     }
 
+    getExportObject() {
+        return {
+            version: this.version,
+            tasks: this.tasks.map(task => task.getExportObject()),
+        };
+    }
+
+    getJson() {
+        return JSON.stringify(this.getExportObject());
+    }
+
     /** Save to localStorage */
     save() {
-        localStorage.setItem('todoTasks', JSON.stringify(this.tasks));
+        const jsonTaskList = this.getJson();
+        localStorage.setItem('todoTasks', jsonTaskList);
+    }
+    
+    /** Save to file download */
+    saveFile() {
+        const jsonTaskList = this.getJson();
+        TextFileHandler.download(jsonTaskList, `routinify-tasks-v${TodoList.version}.json`);
     }
 
     /** Load from localStorage */
     load() {
-        /**
-         * @type {Task[]}
-         */
-        const tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+        this.setJson(localStorage.getItem('todoTasks'));
+    }
+
+    /** Load from file upload 
+     * @param {File} file 
+    */
+    async loadFile(file) {
+        const isTaskListValuable = this.tasks.length > 0;
+        if (isTaskListValuable) {
+            if (!window.confirm('are you sure you want to replace your tasks with the tasks from the file?')) return;
+        }
+        this.clear();
+        const json = await TextFileHandler.upload(file);
+        console.log('File contents:\n', json);
+        this.setJson(json);
+    }
+
+    clear() {
+        this.tasks = [];
+    }
+    
+    /**
+     * 
+     * @param {string} json 
+    */
+    setJson(json) {
+        const data = TodoList.isDefined(json) ? JSON.parse(json) ?? [] : [];
+        const tasks = data.tasks;
+        // VersionNumber.checkVersion(tasks.version);
+        // if (tasks.version >= TodoList.version) {
+        //     window.alert(`loading an old file`);
+        // }
+        this.setTasks(tasks);
+    }
+
+    /**
+     * 
+     * @param {Task[]} tasks
+     */
+    setTasks(tasks) {
         tasks.forEach(task => {
-            this.addTask( task.text, task.checked, task.indentationLevel );
+            this.addTask( task.text, task.checked, task.indentationLevel, task.type );
         });
     }
 
@@ -206,5 +267,19 @@ export class TodoList {
         const numberWord = isFractional ? amount : numberWords[amount] ?? amount;
         const noun = amount === 1 ? singularNoun : pluralNoun;
         return `${numberWord} ${noun}`;
+    }
+
+    /**
+     * 
+     * @param {any} value 
+     * @returns 
+     */
+    static isDefined(value) {
+        switch (value) {
+            case undefined: case null: case "undefined": case "null":
+                return false;
+            default:
+                return true;
+        }
     }
 }
