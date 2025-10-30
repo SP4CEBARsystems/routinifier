@@ -61,6 +61,15 @@ export class Templates {
     }
 
     /**
+     * removes and adds template tasks to the top of the list
+     * @param {string} templateName
+     */
+    addUniqueTemplate(templateName) {
+        this.removeTemplate(templateName);
+        this.addTemplate(templateName);
+    }
+
+    /**
      * @param {string} templateName 
      * @returns {boolean} true if the template exists, false otherwise
      */

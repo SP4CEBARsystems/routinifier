@@ -9,8 +9,22 @@ export default class Routinify {
 
     static version = 1;
 
+    /**
+     * @type {number}
+     */
+    lastExitTimeStamp;
+
+    /**
+     * @type {number}
+     */
+    lastLoadTimeStamp;
+
     constructor() {
+        this.lastExitTimeStamp = parseInt(localStorage.getItem('lastExitTime') ?? '');
+        this.lastLoadTimeStamp = Date.now();
+        window.addEventListener('beforeunload', this.saveExitTimeToLocalStorage.bind(this));
         if (!Routinify.instance) Routinify.instance = this;
+        // Ensure last save time is written before the page unloads
         this.version = Routinify.version;
         const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('pomodoroCanvas'));
         const timeDisplay = document.getElementById('timeDisplay');
@@ -58,6 +72,7 @@ export default class Routinify {
         this.timer = timer;
 
         this.load();
+        this.loadRoutineIfLongAgo('work');
 
         console.log(todo.tasks);
         if (todo.tasks.length == 0) {
@@ -143,12 +158,13 @@ export default class Routinify {
 
     /**
      * 
-     * @typedef {{version: number, focus: string, tasks: any[]}} RoutinifierExport
+     * @typedef {{version: number, lastSaveTime: number, focus: string, tasks: any[]}} RoutinifierExport
      * @returns {RoutinifierExport}
      */
     getExportObject() {
         return {
             version: this.version,
+            lastSaveTime: Date.now(),
             focus: this.getSessionFocus(),
             tasks: this.todo.getExportObject(),
         };
@@ -160,10 +176,13 @@ export default class Routinify {
 
     /** Save to localStorage */
     save() {
-        const jsonTaskList = this.getJson();
-        localStorage.setItem('todoTasks', jsonTaskList);
+        localStorage.setItem('todoTasks', this.getJson());
     }
     
+    saveExitTimeToLocalStorage() {
+        localStorage.setItem('lastExitTime', `${Date.now()}`);
+    }
+
     /** Save to file download */
     saveFile() {
         const jsonTaskList = this.getJson();
@@ -222,5 +241,30 @@ export default class Routinify {
     setObject(data) {
         this.setSessionFocus(data.focus);
         this.todo.setTasks(data.tasks);
+    }
+
+    getTimeSinceLastExit() {
+        return Date.now() - this.lastExitTimeStamp;
+    }
+
+    getTimeSinceLastLoad() {
+        return Date.now() - this.lastLoadTimeStamp;
+    }
+
+    getTimeUnloaded() {
+        return this.lastLoadTimeStamp - this.lastExitTimeStamp;
+    }
+
+    /**
+     * Load the specified routine if the site was closed for longer than the threshold
+     * @param {string} routineName the name of the routine to load
+     * @param {number} [threshold = 60] the time in minutes the site has to be closed for for the routine to load
+     */
+    loadRoutineIfLongAgo(routineName, threshold = 60) {
+        const minutes = 60000;
+        const thresholdMiliseconds = threshold * minutes;
+        if (this.getTimeSinceLastExit() > thresholdMiliseconds) {
+            this.templates.addUniqueTemplate(routineName);
+        }
     }
 }
