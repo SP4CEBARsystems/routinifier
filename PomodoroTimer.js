@@ -110,6 +110,7 @@ export class PomodoroTimer {
         this.workSessionCount = 0;
         this.workAlarmSound = new Audio('./audio/plannedout_work.wav'); // Placeholder path
         this.breakAlarmSound = new Audio('./audio/plannedout_break.wav'); // Placeholder path
+        this.updateSummaryDisplay();
     }
 
     /** Get next phase based on Pomodoro technique rules */
@@ -129,7 +130,6 @@ export class PomodoroTimer {
 
     /** Handle timer completion */
     handleTimerComplete() {
-        // Switch to next phase
         const nextPhase = this.getNextPhase();
         if (this.onPhaseEnd) this.onPhaseEnd(nextPhase.name);
         if (nextPhase.name == 'Work') {
@@ -138,6 +138,30 @@ export class PomodoroTimer {
             this.breakAlarmSound.play();
         }
         this.switchPhase(nextPhase);
+        this.updateSummaryDisplay();
+    }
+
+    updateSummaryDisplay() {
+        let display = '';
+        switch (this.currentPhase.name) {
+            case 'Work': display = `${PomodoroTimer.numberPrefix(this.workSessionCount)} work session`;
+                break;
+            case 'Short Break': display = `${PomodoroTimer.numberPrefix(this.workSessionCount - 1)} break`;
+                break;
+            case 'Long Break': display = `enjoy your long break!`;
+                break;
+        }
+        document.getElementById('timerDetailSummary').textContent = display;
+    }
+
+    /**
+     * 
+     * @param {number} number 
+     * @returns 
+     */
+    static numberPrefix(number) {
+        const numberPrefixes = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelveth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'nineteenth', 'twentieth'];
+        return numberPrefixes[number] ?? `${number}th`;
     }
 
     /** Start the timer */

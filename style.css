@@ -64,10 +64,6 @@ body {
     color: var(--text);
 }
 
-h2 {
-    width: 100%;
-}
-
 .todo-container {
     width: 100%;
 }
@@ -190,6 +186,18 @@ summary {
     border-radius: 2px;
     padding: 0.8rem 1rem;
     background-color: rgba(0, 0, 0, 0.03);
+}
+
+summary div {
+    display: inline-flex;
+    width: 90%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+summary p {
+    margin: 0;
 }
 
 summary:hover {
