@@ -1,9 +1,17 @@
 import { PomodoroTimer } from "./PomodoroTimer.js";
 import { Templates } from "./Templates.js";
+import { TextFileHandler } from "./TextFileHandler.js";
 import { TodoList } from "./TodoList.js";
 
 export default class Routinify {
+    /** @type {Routinify} */
+    static instance;
+
+    static version = 1;
+
     constructor() {
+        if (!Routinify.instance) Routinify.instance = this;
+        this.version = Routinify.version;
         const canvas = document.getElementById('pomodoroCanvas');
         const timeDisplay = document.getElementById('timeDisplay');
         const todoListEl = document.getElementById('todoList');
@@ -45,6 +53,8 @@ export default class Routinify {
             }
         });
         this.timer = timer;
+
+        this.load();
 
         console.log(todo.tasks);
         if (todo.tasks.length == 0) {
@@ -105,18 +115,69 @@ export default class Routinify {
         });
 
         // Download example
-        document.getElementById('downloadTextBtn').addEventListener('click', todo.saveFile.bind(todo));
+        document.getElementById('downloadTextBtn').addEventListener('click', this.saveFile.bind(this));
 
         // Upload example
         document.getElementById('textInput').addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (file) {
                 try {
-                    await todo.loadFile(file);
+                    await this.loadFile(file);
                 } catch (err) {
                     console.error(err.message);
                 }
             }
         });
+    }
+
+    getExportObject() {
+        return {
+            version: this.version,
+            tasks: this.todo.getExportObject(),
+        };
+    }
+
+    getJson() {
+        return JSON.stringify(this.getExportObject());
+    }
+
+    /** Save to localStorage */
+    save() {
+        const jsonTaskList = this.getJson();
+        localStorage.setItem('todoTasks', jsonTaskList);
+    }
+    
+    /** Save to file download */
+    saveFile() {
+        const jsonTaskList = this.getJson();
+        TextFileHandler.download(jsonTaskList, `routinify-tasks-v${Routinify.version}.json`);
+    }
+
+    /** Load from localStorage */
+    load() {
+        this.setJson(localStorage.getItem('todoTasks'));
+    }
+
+    /** Load from file upload 
+     * @param {File} file 
+    */
+    async loadFile(file) {
+        const json = await TextFileHandler.upload(file);
+        console.log('File contents:\n', json);
+        this.setJson(json);
+    }
+    
+    /**
+     * 
+     * @param {string} json 
+    */
+    setJson(json) {
+        const data = TodoList.isDefined(json) ? JSON.parse(json) ?? [] : [];
+        const tasks = data.tasks;
+        // VersionNumber.checkVersion(tasks.version);
+        // if (tasks.version >= Routinify.version) {
+        //     window.alert(`loading an old file`);
+        // }
+        this.todo.setTasks(tasks);
     }
 }
