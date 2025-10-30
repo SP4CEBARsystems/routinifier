@@ -25,6 +25,7 @@ export class Task {
      */
     toggleTask() {
         this.checked = !this.checked;
+        this.getAllChildren(TodoList.mainTodoList.tasks).forEach(task => task.checked = this.checked);
         // this.reorder();
         TodoList.mainTodoList.save();
         TodoList.mainTodoList.render();
