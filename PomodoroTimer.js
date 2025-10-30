@@ -1,14 +1,56 @@
+/**
+ * @file PomodoroTimer - A configurable Pomodoro technique timer that renders a shrinking pie
+ * and manages work / short / long break phases.
+ *
+ * @typedef {'Work'|'Short Break'|'Long Break'} PomodoroPhaseName
+ * @export
+ *
+ * @typedef {{ name: PomodoroPhaseName, duration: number }} PomodoroPhase
+ * @export
+ *
+ * @typedef {{ WORK: PomodoroPhase, SHORT_BREAK: PomodoroPhase, LONG_BREAK: PomodoroPhase }} Phases
+ * @export
+ *
+ * @class PomodoroTimer
+ * @classdesc Timer that renders to an HTMLCanvasElement, tracks current phase, duration and remaining time,
+ * handles phase transitions following the Pomodoro technique (after 4 work sessions → long break),
+ * and exposes controls for start, stop, toggle, reset, and switching phases. Optional callbacks can be
+ * provided for per-second ticks and when a phase ends.
+ *
+ * @param {HTMLCanvasElement} canvas - Canvas element used to draw the circular countdown.
+ * @param {((timeRemaining: number) => void) | null} [onTick=null] - Optional callback invoked every second with remaining seconds.
+ * @param {((phase: PomodoroPhaseName) => void) | null} [onPhaseEnd=null] - Optional callback invoked when a phase completes with the phase name.
+ *
+ * @property {Phases} static PHASES - Default phase definitions available on the class (WORK, SHORT_BREAK, LONG_BREAK).
+ * @property {HTMLCanvasElement} canvas - Canvas passed to the constructor.
+ * @property {CanvasRenderingContext2D} ctx - 2D drawing context obtained from the canvas.
+ * @property {((timeRemaining: number) => void) | null} onTick - Current onTick callback.
+ * @property {((phase: PomodoroPhaseName) => void) | null} onPhaseEnd - Current onPhaseEnd callback.
+ * @property {number | null} interval - Interval ID returned by setInterval when running, or null when stopped.
+ * @property {PomodoroPhase} currentPhase - The active phase object.
+ * @property {number} duration - Current phase duration in seconds.
+ * @property {number} remaining - Remaining seconds in the current phase.
+ * @property {number} workSessionCount - Counter of completed work sessions used to determine long breaks.
+ * @property {HTMLAudioElement} workAlarmSound - Sound played when entering work phase.
+ * @property {HTMLAudioElement} breakAlarmSound - Sound played when entering break phases.
+ *
+ * @example
+ * // Create and start a timer
+ * const canvas = document.querySelector('canvas');
+ * const timer = new PomodoroTimer(canvas,
+ *   (remaining) => console.log(`Remaining: ${PomodoroTimer.formatTime(remaining)}`),
+ *   (phaseName) => console.log(`Phase ended: ${phaseName}`)
+ * );
+ * timer.start();
+ */
 export class PomodoroTimer {
-    /** @typedef {"Work"|"Short Break"|"Long Break"} PomodoroPhaseName */
-    /** @typedef {{name: PomodoroPhaseName, duration: number}} PomodoroPhase */
-    /** @typedef {{WORK: PomodoroPhase, SHORT_BREAK: PomodoroPhase, LONG_BREAK: PomodoroPhase}} Phases */
     /** @type {Phases} */
     static PHASES = {
         WORK: { name: 'Work', duration: 25 },
         SHORT_BREAK: { name: 'Short Break', duration: 5 },
         LONG_BREAK: { name: 'Long Break', duration: 15 }
         // WORK: { name: 'Work', duration: 25/(60*5) },
-        // SHORT_BREAK: { name: 'Short Break', duration: 5/(60*5) },
+        // SHORT_BREAK: { name: 'Short Break', duration: 25/(60*5) },
         // LONG_BREAK: { name: 'Long Break', duration: 15/(60*5) }
     };
     
@@ -18,10 +60,10 @@ export class PomodoroTimer {
     /** @type {CanvasRenderingContext2D} */
     ctx
     
-    /** @type {Function|null} */
+    /** @type { null | ((timeRemaining: number) => void) } */
     onTick
     
-    /** @type {Function|null} */
+    /** @type { null | ((nextPhase: PomodoroPhaseName) => void) } */
     onPhaseEnd
     
     /** @type {number|null} */
@@ -48,8 +90,8 @@ export class PomodoroTimer {
     /**
      * Creates a Pomodoro timer instance.
      * @param {HTMLCanvasElement} canvas
-     * @param {Function|null} onTick Callback every second
-     * @param {Function|null} onPhaseEnd Callback when phase ends
+     * @param { null | ((timeRemaining: number) => void) } onTick Callback every second
+     * @param { null | ((nextPhase: PomodoroPhaseName) => void) } onPhaseEnd Callback when phase ends
      */
     constructor(canvas, onTick = null, onPhaseEnd = null) {
         this.canvas = canvas;
@@ -87,9 +129,9 @@ export class PomodoroTimer {
 
     /** Handle timer completion */
     handleTimerComplete() {
-        if (this.onPhaseEnd) this.onPhaseEnd(this.currentPhase);
         // Switch to next phase
         const nextPhase = this.getNextPhase();
+        if (this.onPhaseEnd) this.onPhaseEnd(nextPhase.name);
         if (nextPhase.name == 'Work') {
             this.workAlarmSound.play();
         } else {

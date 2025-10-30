@@ -259,6 +259,16 @@ export class TodoList {
     }
 
     /**
+     * removes all tasks with a type equal to the provided type
+     * @param {string} filterType the type to be removed from the task list
+     */
+    removeType(filterType) {
+        this.tasks = this.tasks.filter(task => task.type !== filterType);
+        this.save();
+        this.render();
+    }
+
+    /**
      * formulates a count with a noun, handling plural and singular nouns, and turning the values zero to twenty into words
      * @param {number} amount the amount of something
      * @param {string} singularNoun the singular spelling of the noun to be used when the amount is one

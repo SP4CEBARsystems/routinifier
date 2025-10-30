@@ -35,6 +35,23 @@ function main() {
     TodoList.mainTodoList = todo;
     const templates = new Templates(todo);
 
+    timer.onPhaseEnd = managePhaseTemplates;
+    
+    /**
+     * @param {import('./PomodoroTimer.js').PomodoroPhaseName} nextPhase
+     */
+    function managePhaseTemplates(nextPhase) {
+        switch (nextPhase) {
+            case 'Work':
+                templates.removeTemplate('break');
+                break;
+            case 'Short Break':
+            case 'Long Break':
+                templates.addTemplate('break');
+                break;
+        }
+    }
+
     console.log(todo.tasks);
     if (todo.tasks.length == 0) {
         templates.addTemplate('work');

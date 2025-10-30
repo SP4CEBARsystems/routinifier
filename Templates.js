@@ -52,6 +52,15 @@ export class Templates {
     }
 
     /**
+     * remove template tasks from the list
+     * @param {string} templateName
+     */
+    removeTemplate(templateName) {
+        const templateType = `routine-${templateName}`;
+        this.todoList.removeType(templateType);
+    }
+
+    /**
      * @param {string} templateName 
      * @returns {boolean} true if the template exists, false otherwise
      */
