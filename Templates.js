@@ -5,7 +5,7 @@ export class Templates {
         // work: ['Check emails', 'Meeting', 'Code review'],
         // study: ['Read chapter', 'Take notes', 'Practice exercises']
         work: [
-            '1. Start music (lofi girl https://www.youtube.com/watch?v=jfKfPfyJRdk)',
+            '1. Start music',
             '2. Start focus timer',
             '3. Write down session focus',
             '4. Write down known tasks in the todo list',
