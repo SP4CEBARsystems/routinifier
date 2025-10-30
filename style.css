@@ -57,7 +57,7 @@ body {
 .top {
     margin-bottom: 1em;
     /* grid-area: header; */
-    grid-row: span 2;
+    grid-row: span 4;
     grid-column: span 1;
 }
 
@@ -75,6 +75,11 @@ body {
 
 .musicContainer {
     /* grid-area: music; */
+    grid-row: span 1;
+    grid-column: span 1;
+}
+
+.routineControlContainer {
     grid-row: span 1;
     grid-column: span 1;
 }

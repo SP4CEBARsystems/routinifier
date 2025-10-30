@@ -40,17 +40,6 @@
                     <input type="text" id="newTaskInput" placeholder="What task or question needs your attention?" />
                     <button id="addTaskBtn">Add</button>
                 </div>
-                <div class="templates">
-                    <p style="margin:0;">Start routine:</p>
-                    <button data-template="work" class="template-btn">Work</button>
-                    <button data-template="break" class="template-btn">Break</button>
-                </div>
-                <div>
-                    <label for="upload">Load:</label>
-                    <input type="file" id="textInput" accept=".json" name="upload"><br>
-                    <label for="download">Save:</label>
-                    <button id="downloadTextBtn" name="download">Download Text</button>
-                </div>
                 <details>
                     <summary>
                         <div>
@@ -94,6 +83,26 @@
                 <div class="video-container">
                     <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk" title="lofi hip hop radio 📚 beats to relax/study to" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
+            </div>
+        </details>
+
+        <details class="routineControlContainer">
+            <summary>
+                <div>
+                    <h2>Routine Control</h2>
+                    <p id="routineConrolSummary"></p>
+                </div>
+            </summary>
+            <div class="templates">
+                <p style="margin:0;">Start routine:</p>
+                <button data-template="work" class="template-btn">Work</button>
+                <button data-template="break" class="template-btn">Break</button>
+            </div>
+            <div>
+                <label for="upload">Load:</label>
+                <input type="file" id="textInput" accept=".json" name="upload"><br>
+                <label for="download">Save:</label>
+                <button id="downloadTextBtn" name="download">Download Text</button>
             </div>
         </details>
     </article>
