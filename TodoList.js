@@ -110,8 +110,8 @@ export class TodoList {
 
     getExportObject() {
         return {
-            tasks: this.tasks.map(task => task.getExportObject()),
             version: this.version,
+            tasks: this.tasks.map(task => task.getExportObject()),
         };
     }
 
@@ -158,8 +158,9 @@ export class TodoList {
      * 
      * @param {string} json 
     */
-   setJson(json) {
-        const tasks = JSON.parse(json) || [];
+    setJson(json) {
+        const data = TodoList.isDefined(json) ? JSON.parse(json) ?? [] : [];
+        const tasks = data.tasks;
         // VersionNumber.checkVersion(tasks.version);
         // if (tasks.version >= TodoList.version) {
         //     window.alert(`loading an old file`);
@@ -264,5 +265,19 @@ export class TodoList {
         const numberWord = isFractional ? amount : numberWords[amount] ?? amount;
         const noun = amount === 1 ? singularNoun : pluralNoun;
         return `${numberWord} ${noun}`;
+    }
+
+    /**
+     * 
+     * @param {any} value 
+     * @returns 
+     */
+    static isDefined(value) {
+        switch (value) {
+            case undefined: case null: case "undefined": case "null":
+                return false;
+            default:
+                return true;
+        }
     }
 }
