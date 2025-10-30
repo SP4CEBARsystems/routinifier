@@ -52,11 +52,20 @@ export class TodoList {
         this.render();
     }
 
+    /**
+     * 
+     * @param {string} taskId 
+     * @returns {number} found index
+     */
+    getTaskIndex(taskId) {
+        return this.tasks.findIndex(element => element.id === taskId);
+    }
+
     /** Delete a task by index 
      * @param taskId {string}
     */
     deleteTask(taskId) {
-        const taskIndex = this.tasks.findIndex(element => element.id === taskId);
+        const taskIndex = this.getTaskIndex(taskId);
         const task = this.tasks[taskIndex];
         const childCount = task.getChildCount(this.tasks);
         // console.log(this.tasks[taskIndex], this.tasks, 'children', children);
@@ -92,13 +101,57 @@ export class TodoList {
      * @returns {boolean} true if moved
      */
     moveTaskByOffset(taskId, offset) {
-        const idx = this.tasks.findIndex(t => t.id === taskId);
-        const newIdx = idx + offset;
-        if (idx < 0 || newIdx < 0 || newIdx >= this.tasks.length) return false;
-        [this.tasks[idx], this.tasks[newIdx]] = [this.tasks[newIdx], this.tasks[idx]];
+        const taskIndex = this.getTaskIndex(taskId);
+        const task = this.tasks[taskIndex];
+        const newTaskIndex = taskIndex + offset;
+        // const childCount = task.getChildCount(this.tasks);
+        // this.moveSubsection(this.tasks, taskIndex, childCount, newTaskIndex);
+        // this.moveElement(this.tasks, from, to)
+        this.swapElements(this.tasks, taskIndex, newTaskIndex);
         Routinify.instance.save();
         this.render();
         return true;
+    }
+
+    /**
+     * 
+     * @param {any[]} arr 
+     * @param {number} index1 
+     * @param {number} index2 
+     */
+    swapElements(arr, index1, index2 = index1 + 1) {
+        if (index1 < 0 || index2 < 0 || index1 >= arr.length || index2 >= arr.length) return false;
+        [arr[index1], arr[index2]] = [arr[index2], arr[index1]];
+        return true;
+    }
+
+    /**
+     * Moves a single element in an array.
+     * @param {any[]} arr - The array to modify
+     * @param {number} from - Index of the element to move
+     * @param {number} to - Index to move the element to
+     * @returns {any[]} The modified array
+     */
+    moveElement(arr, from, to) {
+        const [element] = arr.splice(from, 1); // remove the element
+        arr.splice(to, 0, element);            // insert at new position
+        return arr;
+    }
+
+    /**
+     * Moves a section of an array to a new position.
+     * @param {any[]} arr - The source array (modified in place)
+     * @param {number} start - Start index of the section to move
+     * @param {number} itemCount - End index (non-inclusive)
+     * @param {number} toIndex - Index to insert the section at
+     * @returns {any[]} The modified array
+     */
+    moveSubsection(arr, start, itemCount, toIndex) {
+        const section = arr.splice(start, itemCount); // remove section
+        // Adjust insertion point if it comes after removed section
+        const insertAt = toIndex > start ? toIndex - itemCount : toIndex;
+        arr.splice(insertAt, 0, ...section);
+        return arr;
     }
 
     /** Reorder tasks: unchecked on top */
