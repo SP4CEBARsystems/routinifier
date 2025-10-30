@@ -215,9 +215,13 @@ export class TodoList {
 
     getFirstTaskSummary() {
         let requiredIndentation = 0;
+        let isEnded = false;
         const topmostTasks = this.tasks.filter(t => {
-            if (t.checked) return false;
-            if (t.indentationLevel < requiredIndentation) return false;
+            if (t.checked || isEnded) return false;
+            if (t.indentationLevel < requiredIndentation) {
+                isEnded = true;
+                return false;
+            };
             requiredIndentation = t.indentationLevel + 1;
             return true;
         });
