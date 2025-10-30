@@ -57,7 +57,7 @@ body {
 .top {
     margin-bottom: 1em;
     /* grid-area: header; */
-    grid-row: span 4;
+    grid-row: span 3;
     grid-column: span 1;
 }
 
