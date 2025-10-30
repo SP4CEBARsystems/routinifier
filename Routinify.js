@@ -12,11 +12,11 @@ export default class Routinify {
     constructor() {
         if (!Routinify.instance) Routinify.instance = this;
         this.version = Routinify.version;
-        const canvas = document.getElementById('pomodoroCanvas');
+        const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('pomodoroCanvas'));
         const timeDisplay = document.getElementById('timeDisplay');
         const todoListEl = document.getElementById('todoList');
         const checkedTodoListEl = document.getElementById('checkedTodoList');
-        const newTaskInput = document.getElementById('newTaskInput');
+        const newTaskInput = /** @type {HTMLInputElement} */ (document.getElementById('newTaskInput'));
         const addTaskBtn = document.getElementById('addTaskBtn');
         const phaseButtons = {
             work: document.getElementById('workPhase'),
@@ -61,19 +61,19 @@ export default class Routinify {
             templates.addTemplate('work');
         }
 
-        addTaskBtn.addEventListener('click', () => {
-            const text = newTaskInput.value.trim();
+        addTaskBtn?.addEventListener('click', () => {
+            const text = newTaskInput?.value?.trim();
             if (text) {
                 todo.addTask(text);
                 newTaskInput.value = '';
             }
         });
 
-        newTaskInput.addEventListener('keydown', (e) => {
+        newTaskInput?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') addTaskBtn.click();
         });
 
-        // currentTaskEl.addEventListener('click', () => {
+        // currentTaskEl?.addEventListener('click', () => {
         //     todo.checkTopTask();
         //     todo.renderFirstTaskSummary(currentTaskEl);
         //     // currentTaskEl.textContent = todo.getTopTask();
@@ -82,44 +82,44 @@ export default class Routinify {
         // });
 
         document.querySelectorAll('.template-btn').forEach(btn => {
-            btn.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
+            btn?.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
         });
 
         timer.draw();
 
         // Add click event listeners to both canvas and time display
         const toggle = timer.toggle.bind(timer);
-        canvas.addEventListener('click', toggle);
-        timeDisplay.addEventListener('click', toggle);
+        canvas?.addEventListener('click', toggle);
+        timeDisplay?.addEventListener('click', toggle);
 
         // Setup phase button handlers
         function updatePhaseButtons(activePhase) {
             Object.entries(phaseButtons).forEach(([phase, button]) => {
-                button.classList.toggle('active', phase === activePhase);
+                button?.classList.toggle('active', phase === activePhase);
             });
         }
 
-        phaseButtons.work.addEventListener('click', () => {
+        phaseButtons.work?.addEventListener('click', () => {
             timer.switchPhase(PomodoroTimer.PHASES.WORK);
             updatePhaseButtons('work');
         });
 
-        phaseButtons.shortBreak.addEventListener('click', () => {
+        phaseButtons.shortBreak?.addEventListener('click', () => {
             timer.switchPhase(PomodoroTimer.PHASES.SHORT_BREAK);
             updatePhaseButtons('shortBreak');
         });
 
-        phaseButtons.longBreak.addEventListener('click', () => {
+        phaseButtons.longBreak?.addEventListener('click', () => {
             timer.switchPhase(PomodoroTimer.PHASES.LONG_BREAK);
             updatePhaseButtons('longBreak');
         });
 
         // Download example
-        document.getElementById('downloadTextBtn').addEventListener('click', this.saveFile.bind(this));
+        document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
 
         // Upload example
-        document.getElementById('textInput').addEventListener('change', async (event) => {
-            const file = event.target.files[0];
+        document.getElementById('textInput')?.addEventListener('change', async (event) => {
+            const file = event?.target?.files[0];
             if (file) {
                 try {
                     await this.loadFile(file);
