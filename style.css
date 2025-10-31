@@ -32,29 +32,10 @@ body {
 }
 
 .container {
-    /* width: 300px; */
-    /* width: auto; */
     width: 100%;
-    /* flex-direction: column; */
-    /* align-items: center; */
-    /* display: flex;
-    flex-wrap: wrap;
-    
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 2em; */
-
     display: grid;
-    /* grid-template-rows: repeat(4 100px);
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); */
     row-gap: 1em;
     column-gap: 4em;
-    /* justify-items: center; */
-    /* align-items: center; */
-    /* grid-template-areas:
-        "header task"
-        "timer task"
-        "music task"; */
     grid-template-rows: repeat(5 100px);
     grid-template-columns: minmax(400px, 1fr) minmax(400px, 20fr) repeat(auto-fit, minmax(400px, 1fr));
     grid-template-areas:
@@ -67,33 +48,22 @@ body {
 .top {
     margin-bottom: 3em;
     grid-area: header;
-    /* grid-row: span 3;
-    grid-column: span 1; */
 }
 
 .tasklistContainer {
     grid-area: task;
-    /* justify-self: stretch; */
-    /* grid-row: span 4;
-    grid-column: span 1; */
 }
 
 .timerContainer {
     grid-area: timer;
-    /* grid-row: span 1;
-    grid-column: span 1; */
 }
 
 .musicContainer {
     grid-area: music;
-    /* grid-row: span 1;
-    grid-column: span 1; */
 }
 
 .routineControlContainer {
     grid-area: controls;
-    /* grid-row: span 1;
-    grid-column: span 1; */
 }
 
 @media (max-width: 1847px) {
@@ -118,10 +88,6 @@ body {
         "music task"
         "controls task";
     }
-
-    .top {
-        /* grid-row: span 1; */
-    }
 }
 
 @media (max-width: 891px) {
@@ -143,37 +109,17 @@ body {
     }
 }
 
-/* On larger (desktop/PC) screens make .container a row */
-/* @media (min-width: 1400px) {
-    .container {
-    }
-} */
-
 .container > details {
     background-color: rgba(0, 0, 0, 0.6);
     box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
-    /* transition: box-shadow 0.2s ease, transform 0.15s ease;
-    will-change: box-shadow, transform; */
-    /* width: 20em; */
     padding: 0 1em;
     border-radius: 0.5em;
 }
 
-details {
-    /* max-width: 20em; */
-    /* width: 100%; */
-    /* margin-bottom: 0.5em; */
-}
-
-/* .container > details:hover {
-    box-shadow: 0 12px 36px rgba(2, 6, 23, 0.12);
-    transform: translateY(-2px);
-} */
-
 .timer-container {
     margin-bottom: 30px;
 }
-etween;
+
 .timer-container.paused canvas {
     opacity: 0.5;
 }
@@ -228,8 +174,7 @@ li {
     margin-bottom: 4px;
     border-radius: var(--card-radius);
     display: flex;
-    flex-direction: row;
-    /* justify-content: space-between; */
+    flex-direction: row;    
     align-items: center;
 }
 
