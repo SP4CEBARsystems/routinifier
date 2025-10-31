@@ -53,41 +53,84 @@ body {
         "header task"
         "timer task"
         "music task"; */
+    grid-template-rows: repeat(5 100px);
+    grid-template-columns: minmax(400px, 1fr) minmax(400px, 20fr) repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-areas:
+    "header task timer music"
+    ". task . ."
+    ". task . controls"
+    ". task . .";
 }
 
 .top {
     margin-bottom: 3em;
-    /* grid-area: header; */
-    grid-row: span 3;
-    grid-column: span 1;
+    grid-area: header;
+    /* grid-row: span 3;
+    grid-column: span 1; */
 }
 
 .tasklistContainer {
-    /* grid-area: task; */
-    grid-row: span 4;
-    grid-column: span 1;
+    grid-area: task;
+    /* grid-row: span 4;
+    grid-column: span 1; */
 }
 
 .timerContainer {
-    /* grid-area: timer; */
-    grid-row: span 1;
-    grid-column: span 1;
+    grid-area: timer;
+    /* grid-row: span 1;
+    grid-column: span 1; */
 }
 
 .musicContainer {
-    /* grid-area: music; */
-    grid-row: span 1;
-    grid-column: span 1;
+    grid-area: music;
+    /* grid-row: span 1;
+    grid-column: span 1; */
 }
 
 .routineControlContainer {
-    grid-row: span 1;
-    grid-column: span 1;
+    grid-area: controls;
+    /* grid-row: span 1;
+    grid-column: span 1; */
+}
+
+@media (max-width: 1655px) {
+    .container {
+        grid-template-rows: repeat(5 100px);
+        grid-template-columns: minmax(400px, 1fr) minmax(400px, 20fr) minmax(400px, 1fr);
+        grid-template-areas:
+        "header task timer"
+        ". task music"
+        ". task controls"
+        ". task .";
+    }
 }
 
 @media (max-width: 1255px) {
+    .container {
+        grid-template-rows: repeat(5 100px);
+        grid-template-columns: repeat(2, minmax(400px, 1fr));
+        grid-template-areas:
+        "header task"
+        "timer task"
+        "music task"
+        "controls task";
+    }
+
     .top {
-        grid-row: span 1;
+        /* grid-row: span 1; */
+    }
+}
+
+@media (max-width: 855px) {
+    .container {
+        grid-template-rows: repeat(5 100px);
+        grid-template-columns: repeat(1, minmax(400px, 1fr));
+        grid-template-areas:
+            "header"
+            "task"
+            "timer"
+            "music"
+            "controls";
     }
 }
 
