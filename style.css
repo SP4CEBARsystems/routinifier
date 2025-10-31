@@ -312,3 +312,31 @@ details:hover {
   width: 100%;
   max-width: 600px;
 }
+
+footer {
+    margin-top: 1.5em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+/* Ensure links in the footer are readable on both light and dark themes */
+footer a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.15s ease, filter 0.15s ease;
+    padding: 1em;
+}
+
+footer a:hover,
+footer a:focus {
+    color: var(--accent);
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+footer a:visited {
+    color: var(--muted-2);
+}
+
+
