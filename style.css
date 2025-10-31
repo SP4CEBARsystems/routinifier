@@ -94,6 +94,7 @@ body {
     .container {
         grid-template-rows: repeat(5 100px);
         grid-template-columns: repeat(1, minmax(400px, 1fr));
+        row-gap: 3em;
         grid-template-areas:
             "header"
             "task"
@@ -105,7 +106,7 @@ body {
 
 @media (max-width: 450px) {
     .container {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(1, minmax(200px, 1fr));
     }
 }
 
