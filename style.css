@@ -55,14 +55,8 @@ body {
         "music task"; */
 }
 
-@media (max-width: 450px) {
-    .container {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-}
-
 .top {
-    margin-bottom: 1em;
+    margin-bottom: 3em;
     /* grid-area: header; */
     grid-row: span 3;
     grid-column: span 1;
@@ -89,6 +83,18 @@ body {
 .routineControlContainer {
     grid-row: span 1;
     grid-column: span 1;
+}
+
+@media (max-width: 1255px) {
+    .top {
+        grid-row: span 1;
+    }
+}
+
+@media (max-width: 450px) {
+    .container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
 }
 
 /* On larger (desktop/PC) screens make .container a row */
