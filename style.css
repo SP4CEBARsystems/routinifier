@@ -45,9 +45,11 @@ body {
     gap: 2em; */
 
     display: grid;
-    grid-template-rows: repeat(4 100px);
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    justify-items: center;
+    /* grid-template-rows: repeat(4 100px);
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); */
+    row-gap: 1em;
+    column-gap: 4em;
+    /* justify-items: center; */
     /* align-items: center; */
     /* grid-template-areas:
         "header task"
@@ -57,8 +59,8 @@ body {
     grid-template-columns: minmax(400px, 1fr) minmax(400px, 20fr) repeat(auto-fit, minmax(400px, 1fr));
     grid-template-areas:
     "header task timer music"
-    ". task . ."
     ". task . controls"
+    ". task . ."
     ". task . .";
 }
 
@@ -71,6 +73,7 @@ body {
 
 .tasklistContainer {
     grid-area: task;
+    /* justify-self: stretch; */
     /* grid-row: span 4;
     grid-column: span 1; */
 }
@@ -93,7 +96,7 @@ body {
     grid-column: span 1; */
 }
 
-@media (max-width: 1655px) {
+@media (max-width: 1847px) {
     .container {
         grid-template-rows: repeat(5 100px);
         grid-template-columns: minmax(400px, 1fr) minmax(400px, 20fr) minmax(400px, 1fr);
@@ -105,7 +108,7 @@ body {
     }
 }
 
-@media (max-width: 1255px) {
+@media (max-width: 1354px) {
     .container {
         grid-template-rows: repeat(5 100px);
         grid-template-columns: repeat(2, minmax(400px, 1fr));
@@ -121,7 +124,7 @@ body {
     }
 }
 
-@media (max-width: 855px) {
+@media (max-width: 891px) {
     .container {
         grid-template-rows: repeat(5 100px);
         grid-template-columns: repeat(1, minmax(400px, 1fr));
@@ -153,13 +156,13 @@ body {
     will-change: box-shadow, transform; */
     /* width: 20em; */
     padding: 0 1em;
+    border-radius: 0.5em;
 }
 
 details {
-    max-width: 20em;
-    width: 100%;
-    margin-bottom: 0.5em;
-    border-radius: 0.5em;
+    /* max-width: 20em; */
+    /* width: 100%; */
+    /* margin-bottom: 0.5em; */
 }
 
 /* .container > details:hover {
