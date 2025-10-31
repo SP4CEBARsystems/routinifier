@@ -55,6 +55,12 @@ body {
         "music task"; */
 }
 
+@media (max-width: 450px) {
+    .container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
 .top {
     margin-bottom: 1em;
     /* grid-area: header; */
