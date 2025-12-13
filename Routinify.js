@@ -29,6 +29,44 @@ export default class Routinify {
         if (!Routinify.instance) Routinify.instance = this;
         // Ensure last save time is written before the page unloads
         this.version = Routinify.version;
+        const { currentTaskEl, todoListEl, checkedTodoListEl, canvas, timeDisplay, addTaskBtn, newTaskInput, phaseButtons } = this.getElements();
+        TodoList.firstTaskSummary = currentTaskEl;
+
+        this.sessionFocusElement = document.getElementById('sessionFocus');
+        this.sessionFocusElement?.addEventListener('change', this.saveSessionFocus.bind(this));
+
+        const todo = new TodoList(todoListEl, checkedTodoListEl);
+        this.todo = todo;
+        TodoList.mainTodoList = todo;
+        const templates = new Templates(todo);
+        this.templates = templates;
+        const timer = this.getTimer(canvas, timeDisplay, todo, currentTaskEl, templates);
+        this.timer = timer;
+        this.load();
+        this.loadRoutineIfLongAgo('work');
+        this.handleTaskButtons(todo, templates, addTaskBtn, newTaskInput);
+        // currentTaskEl?.addEventListener('click', () => {
+        //     todo.checkTopTask();
+        //     todo.renderFirstTaskSummary(currentTaskEl);
+        //     // currentTaskEl.textContent = todo.getTopTask();
+        //     // todo.render();
+        //     todo.save();
+        // });
+        this.handleTemplateButton(templates);
+        this.handleTimer(timer, canvas, timeDisplay, phaseButtons);
+        // Download example
+        document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
+        this.handleKeys();
+        MusicDisplay.init();
+    }
+
+    handleTemplateButton(templates) {
+        document.querySelectorAll('.template-btn').forEach(btn => {
+            btn?.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
+        });
+    }
+
+    getElements() {
         const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('pomodoroCanvas'));
         const timeDisplay = document.getElementById('timeDisplay');
         const todoListEl = document.getElementById('todoList');
@@ -42,41 +80,12 @@ export default class Routinify {
         };
         const currentTaskEl = document.getElementById('currentTask');
         if (!currentTaskEl) {
-            throw new Error('no currentTaskEl!')
+            throw new Error('no currentTaskEl!');
         }
-        TodoList.firstTaskSummary = currentTaskEl;
+        return { currentTaskEl, todoListEl, checkedTodoListEl, canvas, timeDisplay, addTaskBtn, newTaskInput, phaseButtons };
+    }
 
-        this.sessionFocusElement = document.getElementById('sessionFocus');
-        this.sessionFocusElement?.addEventListener('change', this.saveSessionFocus.bind(this));
-
-        const todo = new TodoList(todoListEl, checkedTodoListEl);
-        this.todo = todo;
-        TodoList.mainTodoList = todo;
-        const templates = new Templates(todo);
-        this.templates = templates;
-
-        const timer = new PomodoroTimer(canvas, (remaining) => {
-            timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
-            const topTask = todo.getTopTaskText();
-            // currentTaskEl.textContent = topTask;
-            todo.renderFirstTaskSummary(currentTaskEl);
-            document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
-        }, (nextPhase) => {
-            switch (nextPhase) {
-                case 'Work':
-                    templates.removeTemplate('break');
-                    break;
-                case 'Short Break':
-                case 'Long Break':
-                    templates.addTemplate('break');
-                    break;
-            }
-        });
-        this.timer = timer;
-
-        this.load();
-        this.loadRoutineIfLongAgo('work');
-
+    handleTaskButtons(todo, templates, addTaskBtn, newTaskInput) {
         console.log(todo.tasks);
         if (todo.tasks.length == 0) {
             templates.addTemplate('work');
@@ -93,19 +102,9 @@ export default class Routinify {
         newTaskInput?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') addTaskBtn.click();
         });
+    }
 
-        // currentTaskEl?.addEventListener('click', () => {
-        //     todo.checkTopTask();
-        //     todo.renderFirstTaskSummary(currentTaskEl);
-        //     // currentTaskEl.textContent = todo.getTopTask();
-        //     // todo.render();
-        //     todo.save();
-        // });
-
-        document.querySelectorAll('.template-btn').forEach(btn => {
-            btn?.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
-        });
-
+    handleTimer(timer, canvas, timeDisplay, phaseButtons) {
         timer.draw();
 
         // Add click event listeners to both canvas and time display
@@ -134,10 +133,9 @@ export default class Routinify {
             timer.switchPhase(PomodoroTimer.PHASES.LONG_BREAK);
             updatePhaseButtons('longBreak');
         });
+    }
 
-        // Download example
-        document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
-
+    handleKeys() {
         const textInputElement = document.getElementById('textInput');
         // Upload example
         textInputElement?.addEventListener('change', async (event) => {
@@ -153,7 +151,6 @@ export default class Routinify {
 
 
         // textInputElement?.click();
-
         // Keyboard shortcuts: Ctrl/Cmd+S to save, Ctrl/Cmd+O to open file dialog
         window.addEventListener('keydown', (e) => {
             const key = e.key?.toLowerCase();
@@ -166,8 +163,26 @@ export default class Routinify {
                 textInputElement?.click();
             }
         });
+    }
 
-        MusicDisplay.init();
+    getTimer(canvas, timeDisplay, todo, currentTaskEl, templates) {
+        return new PomodoroTimer(canvas, (remaining) => {
+            timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
+            const topTask = todo.getTopTaskText();
+            // currentTaskEl.textContent = topTask;
+            todo.renderFirstTaskSummary(currentTaskEl);
+            document.title = `${PomodoroTimer.formatTime(remaining)} - ${topTask}`;
+        }, (nextPhase) => {
+            switch (nextPhase) {
+                case 'Work':
+                    templates.removeTemplate('break');
+                    break;
+                case 'Short Break':
+                case 'Long Break':
+                    templates.addTemplate('break');
+                    break;
+            }
+        });
     }
 
     /**
