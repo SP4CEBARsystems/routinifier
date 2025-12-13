@@ -38,13 +38,12 @@ export default class Routinify {
         const todo = new TodoList(todoListEl, checkedTodoListEl);
         this.todo = todo;
         TodoList.mainTodoList = todo;
-        const templates = new Templates(todo);
-        this.templates = templates;
-        const timer = this.getTimer(canvas, timeDisplay, todo, currentTaskEl, templates);
+        this.templates = new Templates(todo);
+        const timer = this.getTimer(canvas, timeDisplay, todo, currentTaskEl);
         this.timer = timer;
         this.load();
         this.loadRoutineIfLongAgo('work');
-        this.handleTaskButtons(todo, templates, addTaskBtn, newTaskInput);
+        this.handleTaskButtons(todo, addTaskBtn, newTaskInput);
         // currentTaskEl?.addEventListener('click', () => {
         //     todo.checkTopTask();
         //     todo.renderFirstTaskSummary(currentTaskEl);
@@ -52,7 +51,7 @@ export default class Routinify {
         //     // todo.render();
         //     todo.save();
         // });
-        this.handleTemplateButton(templates);
+        this.handleTemplateButton();
         this.handleTimer(timer, canvas, timeDisplay, phaseButtons);
         // Download example
         document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
@@ -60,7 +59,8 @@ export default class Routinify {
         MusicDisplay.init();
     }
 
-    handleTemplateButton(templates) {
+    handleTemplateButton() {
+        const templates = this.templates;
         document.querySelectorAll('.template-btn').forEach(btn => {
             btn?.addEventListener('click', () => templates.addTemplate(btn.dataset.template));
         });
@@ -85,10 +85,10 @@ export default class Routinify {
         return { currentTaskEl, todoListEl, checkedTodoListEl, canvas, timeDisplay, addTaskBtn, newTaskInput, phaseButtons };
     }
 
-    handleTaskButtons(todo, templates, addTaskBtn, newTaskInput) {
+    handleTaskButtons(todo, addTaskBtn, newTaskInput) {
         console.log(todo.tasks);
         if (todo.tasks.length == 0) {
-            templates.addTemplate('work');
+            this.templates.addTemplate('work');
         }
 
         addTaskBtn?.addEventListener('click', () => {
@@ -165,7 +165,8 @@ export default class Routinify {
         });
     }
 
-    getTimer(canvas, timeDisplay, todo, currentTaskEl, templates) {
+    getTimer(canvas, timeDisplay, todo, currentTaskEl) {
+        const templates = this.templates;
         return new PomodoroTimer(canvas, (remaining) => {
             timeDisplay.textContent = PomodoroTimer.formatTime(remaining);
             const topTask = todo.getTopTaskText();
