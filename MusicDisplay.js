@@ -1,16 +1,26 @@
+/**
+ * @typedef YTObject 
+ * @property {new (...args: any[]) => Object|undefined} Player
+ * 
+ * @typedef YTAPI 
+ * @property {()=>void|undefined} onYouTubeIframeAPIReady
+ * @property {YTObject|undefined} YT
+ * 
+ * @typedef {Window & typeof globalThis & YTAPI} WindowWithYTAPI
+ */
+
 export default class MusicDisplay {
     /**
-     * 
+     * Creates a status display for YouTube embed iFrames that is updated by the youtube API
      * @param {HTMLIFrameElement} ytEl 
      * @param {HTMLElement} musicDetail 
-     * @param {Window} window - The window object (defaults to globalThis)
-     * @param {Document} document - The document object (defaults to globalThis.document)
-     * @returns 
      */
-    constructor(ytEl, musicDetail, window = globalThis, document = globalThis.document) {
+    constructor(ytEl, musicDetail) {
         this.ytEl = ytEl;
         this.musicDetail = musicDetail;
-        this.window = window;
+        
+        this.window = /** @type {WindowWithYTAPI} */(window);
+        /** @type {Document} */
         this.document = document;
         this.src = this.ytEl.getAttribute('src') || '';
         this.enableJsApi();
@@ -27,6 +37,9 @@ export default class MusicDisplay {
         this.ytEl.setAttribute('src', `${this.src}${separator}enablejsapi=1`);
     }
 
+    /**
+     * Calls for player creation or to set up the youtube API to call for player creation.
+     */
     prepareCreatePlayer() {
         if (this.window.YT && this.window.YT.Player) {
             this.createPlayer();
@@ -42,9 +55,8 @@ export default class MusicDisplay {
     }
 
     /**
-     * 
-     * @param {string} tagUrl 
-     * @returns 
+     * creates a script element as a child of this.document.head
+     * @param {string} tagUrl source of the script
      */
     createScriptTag(tagUrl) {
         const doesTagExist = this.document.querySelector(`script[src="${tagUrl}"]`);
@@ -54,12 +66,16 @@ export default class MusicDisplay {
         this.document.head.appendChild(tag);
     }
 
+    /**
+     * Creates a youtube player to update status
+     */
     createPlayer() {
         if (!this.window.YT || !this.window.YT.Player) return;
         // avoid creating multiple players
         if (this.youtubePlayer) return;
         this.youtubePlayer = new this.window.YT.Player('youtubePlayer', {
             events: {
+                /** @param {{target:{getPlayerState:Function}}} e */
                 onReady: (e) => {
                     // set initial status
                     try {
@@ -69,6 +85,7 @@ export default class MusicDisplay {
                         this.setStatusText(-1);
                     }
                 },
+                /** @param {{data:number}} e */
                 onStateChange: (e) => {
                     this.setStatusText(e.data);
                 }
