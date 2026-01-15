@@ -3,11 +3,15 @@ export default class MusicDisplay {
      * 
      * @param {HTMLIFrameElement} ytEl 
      * @param {HTMLElement} musicDetail 
+     * @param {Window} window - The window object (defaults to globalThis)
+     * @param {Document} document - The document object (defaults to globalThis.document)
      * @returns 
      */
-    constructor(ytEl, musicDetail) {
+    constructor(ytEl, musicDetail, window = globalThis, document = globalThis.document) {
         this.ytEl = ytEl;
         this.musicDetail = musicDetail;
+        this.window = window;
+        this.document = document;
         this.src = this.ytEl.getAttribute('src') || '';
         this.enableJsApi();
         this.prepareCreatePlayer();
@@ -24,13 +28,13 @@ export default class MusicDisplay {
     }
 
     prepareCreatePlayer() {
-        if (window.YT && window.YT.Player) {
+        if (this.window.YT && this.window.YT.Player) {
             this.createPlayer();
         } else {
             // load the IFrame API if not already loaded
             this.createScriptTag('https://www.youtube.com/iframe_api');
-            const prev = window.onYouTubeIframeAPIReady;
-            window.onYouTubeIframeAPIReady = () => {
+            const prev = this.window.onYouTubeIframeAPIReady;
+            this.window.onYouTubeIframeAPIReady = () => {
                 if (typeof prev === 'function') prev();
                 this.createPlayer();
             };
@@ -43,18 +47,18 @@ export default class MusicDisplay {
      * @returns 
      */
     createScriptTag(tagUrl) {
-        const doesTagExist = document.querySelector(`script[src="${tagUrl}"]`);
+        const doesTagExist = this.document.querySelector(`script[src="${tagUrl}"]`);
         if (doesTagExist) return;
-        const tag = document.createElement('script');
+        const tag = this.document.createElement('script');
         tag.src = tagUrl;
-        document.head.appendChild(tag);
+        this.document.head.appendChild(tag);
     }
 
     createPlayer() {
-        if (!window.YT || !window.YT.Player) return;
+        if (!this.window.YT || !this.window.YT.Player) return;
         // avoid creating multiple players
         if (this.youtubePlayer) return;
-        this.youtubePlayer = new YT.Player('youtubePlayer', {
+        this.youtubePlayer = new this.window.YT.Player('youtubePlayer', {
             events: {
                 onReady: (e) => {
                     // set initial status
