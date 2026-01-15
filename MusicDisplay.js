@@ -28,17 +28,26 @@ export default class MusicDisplay {
             this.createPlayer();
         } else {
             // load the IFrame API if not already loaded
-            if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
-                const tag = document.createElement('script');
-                tag.src = 'https://www.youtube.com/iframe_api';
-                document.head.appendChild(tag);
-            }
+            this.createScriptTag('https://www.youtube.com/iframe_api');
             const prev = window.onYouTubeIframeAPIReady;
             window.onYouTubeIframeAPIReady = () => {
                 if (typeof prev === 'function') prev();
                 this.createPlayer();
             };
         }
+    }
+
+    /**
+     * 
+     * @param {string} tagUrl 
+     * @returns 
+     */
+    createScriptTag(tagUrl) {
+        const doesTagExist = document.querySelector(`script[src="${tagUrl}"]`);
+        if (doesTagExist) return;
+        const tag = document.createElement('script');
+        tag.src = tagUrl;
+        document.head.appendChild(tag);
     }
 
     createPlayer() {
@@ -63,6 +72,10 @@ export default class MusicDisplay {
         });
     }
 
+    /**
+     * Interprets YouTube embed video state and displays it on the this.musicDetail element.
+     * @param {number} state 
+     */
     setStatusText(state) {
         let status;
         switch (state) {
