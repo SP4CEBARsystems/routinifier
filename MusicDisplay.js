@@ -1,14 +1,20 @@
 export default class MusicDisplay {
-    constructor() {
-        const ytEl = document.getElementById('youtubePlayer');
-        this.musicDetail = document.getElementById('musicDetailSummary');
-        if (!ytEl || !this.musicDetail) return;
+    /**
+     * 
+     * @param {HTMLIFrameElement|null} ytEl 
+     * @param {HTMLElement|null} musicDetail 
+     * @returns 
+     */
+    constructor(ytEl, musicDetail) {
+        if (!ytEl || !musicDetail) return;
+        this.ytEl = ytEl;
+        this.musicDetail = musicDetail;
 
         // Ensure iframe has enablejsapi=1 so the JS API can control it
-        const src = ytEl.getAttribute('src') || '';
+        const src = this.ytEl.getAttribute('src') || '';
         if (!/(\?|&)enablejsapi=1/.test(src)) {
             const sep = src.includes('?') ? '&' : '?';
-            ytEl.setAttribute('src', src + sep + 'enablejsapi=1');
+            this.ytEl.setAttribute('src', src + sep + 'enablejsapi=1');
         }
 
         if (window.YT && window.YT.Player) {

@@ -56,7 +56,10 @@ export default class Routinify {
         // Download example
         document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
         this.handleKeys();
-        new MusicDisplay();
+        new MusicDisplay(
+            document.getElementById('youtubePlayer'),
+            document.getElementById('musicDetailSummary')
+        );
     }
 
     handleTemplateButton() {
