@@ -8,10 +8,22 @@ export default class MusicDisplay {
     constructor(ytEl, musicDetail) {
         this.ytEl = ytEl;
         this.musicDetail = musicDetail;
-
         this.src = this.ytEl.getAttribute('src') || '';
         this.enableJsApi();
+        this.prepareCreatePlayer();
+    }
 
+    /**
+     * Ensure iframe has enablejsapi=1 so the JS API can control it
+     */
+    enableJsApi() {
+        if (!/(\?|&)enablejsapi=1/.test(this.src)) {
+            const sep = this.src.includes('?') ? '&' : '?';
+            this.ytEl.setAttribute('src', this.src + sep + 'enablejsapi=1');
+        }
+    }
+
+    prepareCreatePlayer() {
         if (window.YT && window.YT.Player) {
             this.createPlayer();
         } else {
@@ -26,16 +38,6 @@ export default class MusicDisplay {
                 if (typeof prev === 'function') prev();
                 this.createPlayer();
             };
-        }
-    }
-
-    /**
-     * Ensure iframe has enablejsapi=1 so the JS API can control it
-     */
-    enableJsApi() {
-        if (!/(\?|&)enablejsapi=1/.test(this.src)) {
-            const sep = this.src.includes('?') ? '&' : '?';
-            this.ytEl.setAttribute('src', this.src + sep + 'enablejsapi=1');
         }
     }
 
