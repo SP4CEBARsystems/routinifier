@@ -56,7 +56,7 @@ export default class Routinify {
         // Download example
         document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
         this.handleKeys();
-        MusicDisplay.init();
+        new MusicDisplay();
     }
 
     handleTemplateButton() {
