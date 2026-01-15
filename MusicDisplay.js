@@ -1,21 +1,16 @@
 export default class MusicDisplay {
     /**
      * 
-     * @param {HTMLIFrameElement|null} ytEl 
-     * @param {HTMLElement|null} musicDetail 
+     * @param {HTMLIFrameElement} ytEl 
+     * @param {HTMLElement} musicDetail 
      * @returns 
      */
     constructor(ytEl, musicDetail) {
-        if (!ytEl || !musicDetail) return;
         this.ytEl = ytEl;
         this.musicDetail = musicDetail;
 
-        // Ensure iframe has enablejsapi=1 so the JS API can control it
-        const src = this.ytEl.getAttribute('src') || '';
-        if (!/(\?|&)enablejsapi=1/.test(src)) {
-            const sep = src.includes('?') ? '&' : '?';
-            this.ytEl.setAttribute('src', src + sep + 'enablejsapi=1');
-        }
+        this.src = this.ytEl.getAttribute('src') || '';
+        this.enableJsApi();
 
         if (window.YT && window.YT.Player) {
             this.createPlayer();
@@ -31,6 +26,16 @@ export default class MusicDisplay {
                 if (typeof prev === 'function') prev();
                 this.createPlayer();
             };
+        }
+    }
+
+    /**
+     * Ensure iframe has enablejsapi=1 so the JS API can control it
+     */
+    enableJsApi() {
+        if (!/(\?|&)enablejsapi=1/.test(this.src)) {
+            const sep = this.src.includes('?') ? '&' : '?';
+            this.ytEl.setAttribute('src', this.src + sep + 'enablejsapi=1');
         }
     }
 
