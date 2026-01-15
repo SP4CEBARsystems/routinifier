@@ -17,10 +17,10 @@ export default class MusicDisplay {
      * Ensure iframe has enablejsapi=1 so the JS API can control it
      */
     enableJsApi() {
-        if (!/(\?|&)enablejsapi=1/.test(this.src)) {
-            const sep = this.src.includes('?') ? '&' : '?';
-            this.ytEl.setAttribute('src', this.src + sep + 'enablejsapi=1');
-        }
+        const isJsApiEnabled = /(\?|&)enablejsapi=1/.test(this.src);
+        if (isJsApiEnabled) return;
+        const separator = this.src.includes('?') ? '&' : '?';
+        this.ytEl.setAttribute('src', `${this.src}${separator}enablejsapi=1`);
     }
 
     prepareCreatePlayer() {
