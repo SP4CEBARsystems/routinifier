@@ -1,9 +1,5 @@
 export default class MusicDisplay {
     constructor() {
-        MusicDisplay.initYouTubeStatusWatcher.call(this);
-    }
-
-    static initYouTubeStatusWatcher() {
         const ytEl = document.getElementById('youtubePlayer');
         const musicDetail = document.getElementById('musicDetailSummary');
         if (!ytEl || !musicDetail) return;
