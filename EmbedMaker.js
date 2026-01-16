@@ -29,7 +29,7 @@ export default class EmbedMaker {
      * @returns 
      */
     static extractYouTubeIds(url) {
-        const regex = /(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})|(?:youtube\.com\/(?:playlist|embed\/videoseries)\?(?:.*&)?list=([a-zA-Z0-9_-]+))/;
+        const regex = /(?:(?:youtube\.com\/(?:playlist|embed\/videoseries))|(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11}))\??(?:&?si=[a-zA-Z0-9_-]+)?.*?&?(?:amp;)?(?:list=([a-zA-Z0-9_-]+))?/;
         const match = url.match(regex);
         if (!match) return {
             videoId: null, 
