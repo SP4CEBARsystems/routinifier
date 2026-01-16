@@ -343,4 +343,14 @@ footer a:visited {
     color: var(--muted-2);
 }
 
+.inputContainer {
+    display: flex;
+}
 
+.inputContainer input {
+    flex: 1;
+}
+
+button {
+    padding: 5px 10px;
+}
