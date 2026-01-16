@@ -61,6 +61,7 @@ export default class EmbedMaker {
      * @param {boolean} [isJsApiEnabled]
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
+     * @param {boolean} [resetResetCount]
      * @returns {Promise<HTMLIFrameElement>}
      */
     async createYouTubeIframe(
@@ -68,12 +69,30 @@ export default class EmbedMaker {
         playlistId = this.playlistId ?? null, 
         isJsApiEnabled = this.isJsApiEnabled ?? false, 
         parentElement = this.parentElement, 
-        statusDisplayElement = this.statusDisplayElement
+        statusDisplayElement = this.statusDisplayElement,
+        resetResetCount = true
     ) {
+        if (resetResetCount) {
+            this.resetCount = 0;
+        }
+        if (videoId && videoId !== this.videoId) {
+            this.videoId = videoId;
+        }
+        if (playlistId && playlistId !== this.playlistId) {
+            this.playlistId = playlistId;
+        }
+        this.isJsApiEnabled = isJsApiEnabled;
+        this.parentElement = parentElement;
+        this.statusDisplayElement = statusDisplayElement;
+        const newSrc = EmbedMaker.getSrc(playlistId, videoId, isJsApiEnabled);
+        if (this.iframe?.src && this.iframe?.src === newSrc) {
+            // identical
+            return this.iframe;
+        }
         const iframe = document.createElement("iframe");
         this.iframe = iframe;
         iframe.id = 'youtubePlayer';
-        iframe.src = EmbedMaker.getSrc(playlistId, videoId, isJsApiEnabled);
+        iframe.src = newSrc;
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
         iframe.allowFullscreen = true;
 
@@ -102,7 +121,7 @@ export default class EmbedMaker {
         if (this.resetCount > resetAttempts) return;
         const isPlaylistIncluded = this.resetCount !== 1;
         this.iframe?.remove();
-        this.createYouTubeIframe(this.videoId, isPlaylistIncluded ? this.playlistId : null);
+        this.createYouTubeIframe(this.videoId, isPlaylistIncluded ? this.playlistId : null, undefined, undefined, undefined, false);
     }
 
     destroy() {
