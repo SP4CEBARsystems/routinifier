@@ -1,8 +1,10 @@
-import MusicDisplay from "./MusicDisplay.js";
+import VideoStatusDisplay from "./VideoStatusDisplay.js";
+import EmbedMaker from "./EmbedMaker.js";
 import { PomodoroTimer } from "./PomodoroTimer.js";
 import { Templates } from "./Templates.js";
 import { TextFileHandler } from "./TextFileHandler.js";
 import { TodoList } from "./TodoList.js";
+import TextInputHandler from "./TextInputHandler.js";
 
 export default class Routinify {
     /** @type {Routinify} */
@@ -56,7 +58,23 @@ export default class Routinify {
         // Download example
         document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
         this.handleKeys();
-        MusicDisplay.init();
+
+        // const ytEl = document.getElementById('youtubePlayer');
+        const container = document.getElementById('video-container');
+        const musicDetail = document.getElementById('musicDetailSummary');
+        if (!container || !musicDetail) return
+        const lofiGirl = 'jfKfPfyJRdk';
+        const iframeManager = new EmbedMaker(lofiGirl, null, true, container, musicDetail, 'Music: ');
+        iframeManager.createYouTubeIframeFromUrl('');
+        // if (ytEl && musicDetail) new VideoStatusDisplay(musicDetail, ytEl, 'Music: ');
+        
+        const videoUrlInputElement = document.getElementById('videoUrlInput');
+        const videoUrlButtonElement = document.getElementById('videoUrlButton');
+        if (videoUrlInputElement && videoUrlButtonElement) {
+            new TextInputHandler(videoUrlInputElement, videoUrlButtonElement, (url) => {
+                iframeManager?.createYouTubeIframeFromUrl(url);
+            });
+        }
     }
 
     handleTemplateButton() {
