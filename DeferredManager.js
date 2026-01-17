@@ -13,11 +13,19 @@ export default class DeferredManager {
         return  this.promiseManager.promise;
     }
 
-    resolve() {
-        this.promiseManager.resolve();
+    /**
+     * 
+     * @param {*} [item] 
+     */
+    resolve(item) {
+        this.promiseManager.resolve(item);
     }
 
-    reject() {
-        this.promiseManager.reject();
+    /**
+     * 
+     * @param {Error} [error] 
+     */
+    reject(error) {
+        this.promiseManager.reject(error);
     }
 }

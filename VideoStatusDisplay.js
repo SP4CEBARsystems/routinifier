@@ -159,7 +159,7 @@ export default class VideoStatusDisplay extends DeferredManager {
             this.reject();
             console.log('reject videostatus');
         } else if (isSuccess) {
-            this.resolve();
+            this.resolve(this.youtubePlayer);
             console.log('resolve videostatus');
         }
     }
