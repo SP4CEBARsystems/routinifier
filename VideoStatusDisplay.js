@@ -34,7 +34,6 @@ export default class VideoStatusDisplay extends DeferredManager {
         this.musicDetail = musicDetail;
         this.label = label;
         this.iframeElementId = iframeElementId;
-        /** @type {Function|null} */
         this.window = /** @type {WindowWithYTAPI} */(window);
         /** @type {Document} */
         this.document = document;
