@@ -25,13 +25,15 @@ export default class VideoStatusDisplay extends Deferred {
      * Creates a status display for YouTube embed iFrames that is updated by the youtube API
      * @param {HTMLElement} musicDetail 
      * @param {HTMLIFrameElement} [ytEl] 
-     * @param {string} label 
+     * @param {string} [label] 
+     * @param {string} [iframeElementId] 
      */
-    constructor(musicDetail, ytEl, label = 'Video: ') {
+    constructor(musicDetail, ytEl, label = 'Video: ', iframeElementId = 'youtubePlayer') {
         super();
         this.ytEl = ytEl;
         this.musicDetail = musicDetail;
         this.label = label;
+        this.iframeElementId = iframeElementId;
         /** @type {Function|null} */
         this.window = /** @type {WindowWithYTAPI} */(window);
         /** @type {Document} */
@@ -114,7 +116,7 @@ export default class VideoStatusDisplay extends Deferred {
         if (!this.window.YT || !this.window.YT.Player) return;
         // avoid creating multiple players
         if (this.youtubePlayer) return;
-        this.youtubePlayer = new this.window.YT.Player('youtubePlayer', {
+        this.youtubePlayer = new this.window.YT.Player(this.iframeElementId, {
             events: {
                 /** @param {{target:{getPlayerState:Function}}} e */
                 onReady: (e) => {

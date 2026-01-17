@@ -11,8 +11,9 @@ export default class EmbedMaker extends Deferred {
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
      * @param {string} [statusDisplayLabel]
+     * @param {string} [iframeElementId]
      */
-    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel) {
+    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel, iframeElementId) {
         super();
         this.videoId = videoId;
         this.playlistId = playlistId;
@@ -20,6 +21,7 @@ export default class EmbedMaker extends Deferred {
         this.parentElement = parentElement;
         this.statusDisplayElement = statusDisplayElement;
         this.statusDisplayLabel = statusDisplayLabel;
+        this.iframeElementId = iframeElementId;
         this.resetCount = 0;
         this.resetDisplay();
         this.iframeDetectionPromise = this.createYouTubeIframe();
@@ -93,7 +95,7 @@ export default class EmbedMaker extends Deferred {
         }
         const iframe = document.createElement("iframe");
         this.iframe = iframe;
-        iframe.id = 'youtubePlayer';
+        iframe.id = this.iframeElementId;
         iframe.src = newSrc;
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
         iframe.allowFullscreen = true;
@@ -112,7 +114,7 @@ export default class EmbedMaker extends Deferred {
                 this.display.reset(this.iframe);
             }
         } else {
-            this.display = new VideoStatusDisplay(this.statusDisplayElement, this.iframe, this.statusDisplayLabel);
+            this.display = new VideoStatusDisplay(this.statusDisplayElement, this.iframe, this.statusDisplayLabel, this.iframeElementId);
             if (this.display) this.display.promise
                 .then(this.resolve.bind(this))
                 .catch(this.onVideoError.bind(this));
