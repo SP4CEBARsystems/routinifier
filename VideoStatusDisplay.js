@@ -1,3 +1,4 @@
+import Deferred from "./Deferred.js";
 /**
  * @typedef YTObject 
  * @property {new (...args: any[]) => YTPlayer|undefined} Player
@@ -9,7 +10,6 @@
  * @typedef {Window & typeof globalThis & YTAPI} WindowWithYTAPI
  */
 
-import Deferred from "./Deferred";
 
 export default class VideoStatusDisplay extends Deferred {
     /** 
