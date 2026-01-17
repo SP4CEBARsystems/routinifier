@@ -1,10 +1,11 @@
 import AsyncHelpers from "./AsyncHelpers.js";
-import Deferred from "./Deferred.js";
+import DeferredManager from "./DeferredManager.js";
 import VideoStatusDisplay from "./VideoStatusDisplay.js";
 
-export default class EmbedMaker extends Deferred {
+export default class EmbedMaker extends DeferredManager {
     /**
      * Creates a YouTube iframe element for a video and/or playlist.
+     * The promise property will fulfil when the iframe is ready to play, and reject after a possible retry and when it can not be loaded.
      * @param {string|null} [videoId]
      * @param {string|null} [playlistId]
      * @param {boolean} [isJsApiEnabled]
@@ -13,7 +14,7 @@ export default class EmbedMaker extends Deferred {
      * @param {string} [statusDisplayLabel]
      * @param {string} [iframeElementId]
      */
-    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel, iframeElementId) {
+    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel, iframeElementId = 'youtubePlayer') {
         super();
         this.videoId = videoId;
         this.playlistId = playlistId;
@@ -78,6 +79,7 @@ export default class EmbedMaker extends Deferred {
     ) {
         if (resetResetCount) {
             this.resetCount = 0;
+            this.resetPromise();
         }
         if (videoId && videoId !== this.videoId) {
             this.videoId = videoId;
@@ -112,11 +114,14 @@ export default class EmbedMaker extends Deferred {
         if (this.display) {
             if (this.iframe) {
                 this.display.reset(this.iframe);
+                if (this.display) this.display.getPromise()
+                    .then(this.onVideoReady.bind(this))
+                    .catch(this.onVideoError.bind(this));
             }
         } else {
             this.display = new VideoStatusDisplay(this.statusDisplayElement, this.iframe, this.statusDisplayLabel, this.iframeElementId);
-            if (this.display) this.display.promise
-                .then(this.resolve.bind(this))
+            if (this.display) this.display.getPromise()
+                .then(this.onVideoReady.bind(this))
                 .catch(this.onVideoError.bind(this));
         }
     }
@@ -126,11 +131,18 @@ export default class EmbedMaker extends Deferred {
         const resetAttempts = this.playlistId ? 1 : 0;
         if (this.resetCount > resetAttempts) {
             this.reject();
+            console.log('reject EmbedMaker');
             return;
         }
+        console.log('reset EmbedMaker');
         const isPlaylistIncluded = this.resetCount !== 1;
         this.iframe?.remove();
         this.createYouTubeIframe(this.videoId, isPlaylistIncluded ? this.playlistId : null, undefined, undefined, undefined, false);
+    }
+
+    onVideoReady() {
+        console.log('resolve EmbedMaker');
+        this.resolve();
     }
 
     destroy() {

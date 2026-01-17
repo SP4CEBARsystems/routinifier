@@ -1,4 +1,4 @@
-import Deferred from "./Deferred.js";
+import DeferredManager from "./DeferredManager.js";
 /**
  * @typedef YTObject 
  * @property {new (...args: any[]) => YTPlayer|undefined} Player
@@ -11,7 +11,7 @@ import Deferred from "./Deferred.js";
  */
 
 
-export default class VideoStatusDisplay extends Deferred {
+export default class VideoStatusDisplay extends DeferredManager {
     /** 
      * @typedef {Object} YTPlayer
      * @property {()=>any} destroy
@@ -51,6 +51,7 @@ export default class VideoStatusDisplay extends Deferred {
     reset(ytEl) {
         this.ytEl = ytEl;
         this.destroy();
+        this.resetPromise();
         this.enableJsApi();
         this.prepareCreatePlayer();
     }
@@ -142,6 +143,7 @@ export default class VideoStatusDisplay extends Deferred {
      * @param {boolean} isReady
      */
     setStatusText(state, isReady = false) {
+        /** @type {'Playing'|'Paused'|'Ended'|'Buffering'|'Error'|'Unstarted'|'Ready'|'Stopped'} */
         let status;
         switch (state) {
             case 1: status = 'Playing'; break;       // YT.PlayerState.PLAYING
@@ -149,15 +151,17 @@ export default class VideoStatusDisplay extends Deferred {
             case 0: status = 'Ended'; break;         // YT.PlayerState.ENDED
             case 3: status = 'Buffering'; break;     // YT.PlayerState.BUFFERING
             case -1: status = isReady ? 'Error' : 'Unstarted'; break;    // YT.PlayerState.UNSTARTED
-            default: status = 'Stopped';
+            default: status = isReady ? 'Ready' : 'Stopped';
         }
         this.musicDetail.textContent = `${this.label}${status}`;
-        const isSuccess = isReady && state == 2;
-        const isError = isReady && state == -1;
+        const isSuccess = status === 'Ready';
+        const isError = status === 'Error';
         if (isError) {
             this.reject();
+            console.log('reject videostatus');
         } else if (isSuccess) {
             this.resolve();
+            console.log('resolve videostatus');
         }
     }
 }
