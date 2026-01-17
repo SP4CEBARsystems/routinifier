@@ -1,3 +1,4 @@
+import DeferredManager from "./DeferredManager.js";
 /**
  * @typedef YTObject 
  * @property {new (...args: any[]) => YTPlayer|undefined} Player
@@ -9,7 +10,8 @@
  * @typedef {Window & typeof globalThis & YTAPI} WindowWithYTAPI
  */
 
-export default class VideoStatusDisplay {
+
+export default class VideoStatusDisplay extends DeferredManager {
     /** 
      * @typedef {Object} YTPlayer
      * @property {()=>any} destroy
@@ -27,12 +29,11 @@ export default class VideoStatusDisplay {
      * @param {string} [iframeElementId] 
      */
     constructor(musicDetail, ytEl, label = 'Video: ', iframeElementId = 'youtubePlayer') {
+        super();
         this.ytEl = ytEl;
         this.musicDetail = musicDetail;
         this.label = label;
         this.iframeElementId = iframeElementId;
-        /** @type {Function|null} */
-        this.onError = null;
         this.window = /** @type {WindowWithYTAPI} */(window);
         /** @type {Document} */
         this.document = document;
@@ -49,6 +50,7 @@ export default class VideoStatusDisplay {
     reset(ytEl) {
         this.ytEl = ytEl;
         this.destroy();
+        this.resetPromise();
         this.enableJsApi();
         this.prepareCreatePlayer();
     }
@@ -140,6 +142,7 @@ export default class VideoStatusDisplay {
      * @param {boolean} isReady
      */
     setStatusText(state, isReady = false) {
+        /** @type {'Playing'|'Paused'|'Ended'|'Buffering'|'Error'|'Unstarted'|'Ready'|'Stopped'} */
         let status;
         switch (state) {
             case 1: status = 'Playing'; break;       // YT.PlayerState.PLAYING
@@ -147,12 +150,17 @@ export default class VideoStatusDisplay {
             case 0: status = 'Ended'; break;         // YT.PlayerState.ENDED
             case 3: status = 'Buffering'; break;     // YT.PlayerState.BUFFERING
             case -1: status = isReady ? 'Error' : 'Unstarted'; break;    // YT.PlayerState.UNSTARTED
-            default: status = 'Stopped';
+            default: status = isReady ? 'Ready' : 'Stopped';
         }
         this.musicDetail.textContent = `${this.label}${status}`;
-        const isError = isReady && state == -1;
+        const isSuccess = status === 'Ready';
+        const isError = status === 'Error';
         if (isError) {
-            if (this?.onError) this?.onError();
+            this.reject();
+            console.log('reject videostatus');
+        } else if (isSuccess) {
+            this.resolve();
+            console.log('resolve videostatus');
         }
     }
 }

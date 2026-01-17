@@ -30,7 +30,9 @@ export default class VideoElement extends ElementLoader {
      */
     constructor(iframeContainerId, statusId, inputId, buttonId, defaultYTId = VideoElement.lofiGirlId, statusLabel = 'Video: ', iframeElementId) {
         super();
-        [this.iframeContainer, this.status, this.input, this.button] = this.getElementsById(iframeContainerId, statusId, inputId, buttonId);
+        [this.iframeContainer, this.status, this.input, this.button] = 
+            /** @type {[HTMLElement, HTMLElement, HTMLInputElement, HTMLButtonElement]} */
+            (this.getElementsById(iframeContainerId, statusId, inputId, buttonId));
         if ([this.iframeContainer, this.status, this.input, this.button].some((element) => element === null || element === undefined)) {
             return;
         }
