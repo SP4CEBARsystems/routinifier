@@ -9,7 +9,9 @@
  * @typedef {Window & typeof globalThis & YTAPI} WindowWithYTAPI
  */
 
-export default class VideoStatusDisplay {
+import Deferred from "./Deferred";
+
+export default class VideoStatusDisplay extends Deferred {
     /** 
      * @typedef {Object} YTPlayer
      * @property {()=>any} destroy
@@ -26,11 +28,11 @@ export default class VideoStatusDisplay {
      * @param {string} label 
      */
     constructor(musicDetail, ytEl, label = 'Video: ') {
+        super();
         this.ytEl = ytEl;
         this.musicDetail = musicDetail;
         this.label = label;
         /** @type {Function|null} */
-        this.onError = null;
         this.window = /** @type {WindowWithYTAPI} */(window);
         /** @type {Document} */
         this.document = document;
@@ -148,9 +150,12 @@ export default class VideoStatusDisplay {
             default: status = 'Stopped';
         }
         this.musicDetail.textContent = `${this.label}${status}`;
+        const isSuccess = isReady && state == 2;
         const isError = isReady && state == -1;
         if (isError) {
-            if (this?.onError) this?.onError();
+            this.reject();
+        } else if (isSuccess) {
+            this.resolve();
         }
     }
 }

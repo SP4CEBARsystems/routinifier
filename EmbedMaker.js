@@ -1,7 +1,8 @@
 import AsyncHelpers from "./AsyncHelpers.js";
+import Deferred from "./Deferred.js";
 import VideoStatusDisplay from "./VideoStatusDisplay.js";
 
-export default class EmbedMaker {
+export default class EmbedMaker extends Deferred {
     /**
      * Creates a YouTube iframe element for a video and/or playlist.
      * @param {string|null} [videoId]
@@ -12,6 +13,7 @@ export default class EmbedMaker {
      * @param {string} [statusDisplayLabel]
      */
     constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel) {
+        super();
         this.videoId = videoId;
         this.playlistId = playlistId;
         this.isJsApiEnabled = isJsApiEnabled;
@@ -20,7 +22,7 @@ export default class EmbedMaker {
         this.statusDisplayLabel = statusDisplayLabel;
         this.resetCount = 0;
         this.resetDisplay();
-        this.createYouTubeIframe();
+        this.iframeDetectionPromise = this.createYouTubeIframe();
     }
     
     /**
@@ -111,14 +113,19 @@ export default class EmbedMaker {
             }
         } else {
             this.display = new VideoStatusDisplay(this.statusDisplayElement, this.iframe, this.statusDisplayLabel);
-            if (this.display) this.display.onError = this.onVideoError.bind(this);
+            if (this.display) this.display.promise
+                .then(this.resolve.bind(this))
+                .catch(this.onVideoError.bind(this));
         }
     }
 
     onVideoError() {
         this.resetCount++;
         const resetAttempts = this.playlistId ? 1 : 0;
-        if (this.resetCount > resetAttempts) return;
+        if (this.resetCount > resetAttempts) {
+            this.reject();
+            return;
+        }
         const isPlaylistIncluded = this.resetCount !== 1;
         this.iframe?.remove();
         this.createYouTubeIframe(this.videoId, isPlaylistIncluded ? this.playlistId : null, undefined, undefined, undefined, false);
