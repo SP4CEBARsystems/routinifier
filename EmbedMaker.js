@@ -10,14 +10,16 @@ export default class EmbedMaker {
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
      * @param {string} [statusDisplayLabel]
+     * @param {string} [iframeElementId]
      */
-    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel) {
+    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel, iframeElementId) {
         this.videoId = videoId;
         this.playlistId = playlistId;
         this.isJsApiEnabled = isJsApiEnabled;
         this.parentElement = parentElement;
         this.statusDisplayElement = statusDisplayElement;
         this.statusDisplayLabel = statusDisplayLabel;
+        this.iframeElementId = iframeElementId;
         this.resetCount = 0;
         this.resetDisplay();
         this.createYouTubeIframe();
@@ -91,7 +93,7 @@ export default class EmbedMaker {
         }
         const iframe = document.createElement("iframe");
         this.iframe = iframe;
-        iframe.id = 'youtubePlayer';
+        iframe.id = this.iframeElementId;
         iframe.src = newSrc;
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
         iframe.allowFullscreen = true;
@@ -110,7 +112,7 @@ export default class EmbedMaker {
                 this.display.reset(this.iframe);
             }
         } else {
-            this.display = new VideoStatusDisplay(this.statusDisplayElement, this.iframe, this.statusDisplayLabel);
+            this.display = new VideoStatusDisplay(this.statusDisplayElement, this.iframe, this.statusDisplayLabel, this.iframeElementId);
             if (this.display) this.display.onError = this.onVideoError.bind(this);
         }
     }
