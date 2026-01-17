@@ -31,20 +31,6 @@ body {
     color: var(--text);
 }
 
-.container {
-    width: 100%;
-    display: grid;
-    row-gap: 1em;
-    column-gap: 4em;
-    grid-template-rows: repeat(5 100px);
-    grid-template-columns: minmax(400px, 1fr) minmax(400px, 20fr) repeat(auto-fit, minmax(400px, 1fr));
-    grid-template-areas:
-    "header task timer music"
-    ". task . controls"
-    ". task . ."
-    ". task . .";
-}
-
 .top {
     margin-bottom: 3em;
     grid-area: header;
@@ -62,8 +48,26 @@ body {
     grid-area: music;
 }
 
+.podcastContainer {
+    grid-area: podcast;
+}
+
 .routineControlContainer {
     grid-area: controls;
+}
+
+.container {
+    width: 100%;
+    display: grid;
+    row-gap: 1em;
+    column-gap: 4em;
+    grid-template-rows: repeat(5 100px);
+    grid-template-columns: minmax(400px, 1fr) minmax(400px, 20fr) repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-areas:
+    "header task timer music"
+    ". task . podcast"
+    ". task . controls"
+    ". task . .";
 }
 
 @media (max-width: 1847px) {
@@ -73,8 +77,8 @@ body {
         grid-template-areas:
         "header task timer"
         ". task music"
-        ". task controls"
-        ". task .";
+        ". task podcast"
+        ". task controls";
     }
 }
 
@@ -86,6 +90,7 @@ body {
         "header task"
         "timer task"
         "music task"
+        "podcast task"
         "controls task";
     }
 }
@@ -100,6 +105,7 @@ body {
             "task"
             "timer"
             "music"
+            "podcast"
             "controls";
     }
 }
