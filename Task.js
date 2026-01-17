@@ -79,7 +79,7 @@ export class Task {
      * @param {HTMLLIElement} li 
      */
     renderIndent(li) {
-        console.log('in', this.indentationLevel);
+        // console.log('in', this.indentationLevel);
         for (let i = 0; i < this.indentationLevel; i++) {
             const div = document.createElement('div');
             div.textContent = '>';

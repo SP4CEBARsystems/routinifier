@@ -131,17 +131,14 @@ export default class EmbedMaker extends DeferredManager {
         const resetAttempts = this.playlistId ? 1 : 0;
         if (this.resetCount > resetAttempts) {
             this.reject();
-            console.log('reject EmbedMaker');
             return;
         }
-        console.log('reset EmbedMaker');
         const isPlaylistIncluded = this.resetCount !== 1;
         this.iframe?.remove();
         this.createYouTubeIframe(this.videoId, isPlaylistIncluded ? this.playlistId : null, undefined, undefined, undefined, false);
     }
 
     onVideoReady() {
-        console.log('resolve EmbedMaker');
         this.resolve(this.iframe);
     }
 

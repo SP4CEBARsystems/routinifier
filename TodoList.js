@@ -70,12 +70,12 @@ export class TodoList {
         const childCount = task.getChildCount(this.tasks);
         // console.log(this.tasks[taskIndex], this.tasks, 'children', children);
         // return;
-        console.log('before this.tasks', this.tasks);
+        // console.log('before this.tasks', this.tasks);
         if (childCount > 0) {
             if (!window.confirm(`Are you sure you want to delete the task named "${task.text}" with ${TodoList.pluralFix(childCount, 'subtask', 'subtasks')}`)) return;
         }
         this.tasks.splice(taskIndex, childCount + 1);
-        console.log('after this.tasks', this.tasks);
+        // console.log('after this.tasks', this.tasks);
         Routinify.instance.save();
         this.render();
     }
