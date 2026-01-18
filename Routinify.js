@@ -60,8 +60,16 @@ export default class Routinify {
         document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
         this.handleKeys();
 
-        new VideoElement('video-container', 'musicDetailSummary', 'videoUrlInput', 'videoUrlButton', VideoElement.lofiGirlId, 'Music: ', 'musicPlayer');
-        new VideoElement('podcast-container', 'podcastDetailSummary', 'podcastUrlInput', 'podcastUrlButton', VideoElement.atheistDelusionId, 'Podcast: ', 'podcastPlayer');
+        this.musicPlayer = new VideoElement('video-container', 'musicDetailSummary', 'videoUrlInput', 'videoUrlButton', VideoElement.lofiGirlId, 'Music: ', 'musicPlayer');
+        this.podcastPlayer = new VideoElement('podcast-container', 'podcastDetailSummary', 'podcastUrlInput', 'podcastUrlButton', VideoElement.atheistDelusionId, 'Podcast: ', 'podcastPlayer');
+        this.timer.setOnStart(() => {
+            this.musicPlayer.resume();
+            this.podcastPlayer.resume();
+        });
+        this.timer.setOnStop(() => {
+            this.musicPlayer.pause();
+            this.podcastPlayer.pause();
+        });
     }
 
     handleTemplateButton() {

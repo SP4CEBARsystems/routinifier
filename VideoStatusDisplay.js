@@ -21,6 +21,14 @@ export default class VideoStatusDisplay extends DeferredManager {
      */
     youtubePlayer
 
+    /** @type {'Playing'|'Paused'|'Ended'|'Buffering'|'Error'|'Unstarted'|'Ready'|'Stopped'|'Initializing'} */
+    status = 'Initializing';
+
+    /**
+     * @type {(()=>void) | undefined}
+     */
+    _onPlaying
+
     /**
      * Creates a status display for YouTube embed iFrames that is updated by the youtube API
      * @param {HTMLElement} musicDetail 
@@ -41,6 +49,14 @@ export default class VideoStatusDisplay extends DeferredManager {
             this.enableJsApi();
             this.prepareCreatePlayer();
         }
+    }
+
+    /**
+     * 
+     * @param {(()=>void) | undefined} value 
+     */
+    setOnPlaying(value) {
+        this._onPlaying = value;
     }
 
     /**
@@ -153,12 +169,11 @@ export default class VideoStatusDisplay extends DeferredManager {
             default: status = isReady ? 'Ready' : 'Stopped';
         }
         this.musicDetail.textContent = `${this.label}${status}`;
-        const isSuccess = status === 'Ready';
-        const isError = status === 'Error';
-        if (isError) {
-            this.reject();
-        } else if (isSuccess) {
-            this.resolve(this.youtubePlayer);
+        this.status = status;
+        switch (status) {
+            case 'Ready': this.resolve(this.youtubePlayer); break;
+            case 'Error': this.reject(); break;
+            case 'Playing': if (this._onPlaying) this._onPlaying(); break;
         }
     }
 }

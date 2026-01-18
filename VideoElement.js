@@ -1,6 +1,7 @@
 import ElementLoader from "./ElementLoader.js";
 import EmbedMaker from "./EmbedMaker.js";
 import TextInputHandler from "./TextInputHandler.js";
+import VideoStatusDisplay from "./VideoStatusDisplay.js";
 
 export default class VideoElement extends ElementLoader {
     static lofiGirlId = 'jfKfPfyJRdk';
@@ -17,6 +18,8 @@ export default class VideoElement extends ElementLoader {
     
     /** @type {HTMLButtonElement|null} */
     button = null;
+
+    hasPlayed = false;
 
     /**
      * 
@@ -37,11 +40,57 @@ export default class VideoElement extends ElementLoader {
             return;
         }
         const iframeManager = new EmbedMaker(defaultYTId, null, true, this.iframeContainer ?? undefined, this.status ?? undefined, statusLabel, iframeElementId);
+        iframeManager.getPromise().then(this.onYTPlayerReady.bind(this));
         
         if (this.input && this.button) {
             new TextInputHandler(this.input, this.button, (url) => {
                 iframeManager?.createYouTubeIframeFromUrl(url);
+                iframeManager.getPromise().then(this.onYTPlayerReady.bind(this));
             });
         }
+
+    }
+
+    /**
+     * 
+     * @param {{player:{playVideo:()=>void, pauseVideo:()=>void, stopVideo:()=>void}, display:VideoStatusDisplay}} param0 
+     */
+    onYTPlayerReady({player, display}) {
+        this.player = player;
+        display.setOnPlaying(() => {
+            console.log('playing');
+            this.hasPlayed = true
+        });
+    }
+
+    play() {
+        if (!this.player) {
+            console.error('youtube player unavailable, it may still be loading')
+            return;
+        }
+        this.player.playVideo();
+        this.hasPlayed = true;
+    }
+    
+    pause() {
+        if (!this.player) {
+            console.error('youtube player unavailable, it may still be loading')
+            return;
+        }
+        this.player.pauseVideo();
+    }
+    
+    stop() {
+        if (!this.player) {
+            console.error('youtube player unavailable, it may still be loading')
+            return;
+        }
+        this.player.stopVideo();
+        this.hasPlayed = false;
+    }
+
+    resume() {
+        if (!this.hasPlayed) return;
+        this.play();
     }
 }

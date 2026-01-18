@@ -139,7 +139,7 @@ export default class EmbedMaker extends DeferredManager {
     }
 
     onVideoReady() {
-        this.resolve(this.iframe);
+        this.resolve({iframe: this.iframe, display:this.display, player:this.display?.youtubePlayer});
     }
 
     destroy() {
