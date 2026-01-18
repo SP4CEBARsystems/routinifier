@@ -60,15 +60,15 @@ export default class Routinify {
         document.getElementById('downloadTextBtn')?.addEventListener('click', this.saveFile.bind(this));
         this.handleKeys();
 
-        this.musicPlayer = new VideoElement('video-container', 'musicDetailSummary', 'videoUrlInput', 'videoUrlButton', VideoElement.lofiGirlId, 'Music: ', 'musicPlayer');
-        this.podcastPlayer = new VideoElement('podcast-container', 'podcastDetailSummary', 'podcastUrlInput', 'podcastUrlButton', VideoElement.atheistDelusionId, 'Podcast: ', 'podcastPlayer');
+        this.musicPlayer = new VideoElement('video-container', 'musicDetailSummary', 'videoUrlInput', 'videoUrlButton', 'musicFollowTimer', VideoElement.lofiGirlId, 'Music: ', 'musicPlayer');
+        this.podcastPlayer = new VideoElement('podcast-container', 'podcastDetailSummary', 'podcastUrlInput', 'podcastUrlButton', 'podcastFollowTimer', VideoElement.atheistDelusionId, 'Podcast: ', 'podcastPlayer');
         this.timer.setOnStart(() => {
-            this.musicPlayer.resume();
-            this.podcastPlayer.resume();
+            this.musicPlayer.resume('timer');
+            this.podcastPlayer.resume('timer');
         });
         this.timer.setOnStop(() => {
-            this.musicPlayer.pause();
-            this.podcastPlayer.pause();
+            this.musicPlayer.pause('timer');
+            this.podcastPlayer.pause('timer');
         });
     }
 
@@ -99,7 +99,7 @@ export default class Routinify {
     }
 
     handleTaskButtons(todo, addTaskBtn, newTaskInput) {
-        console.log(todo.tasks);
+        // console.log(todo.tasks);
         if (todo.tasks.length == 0) {
             this.templates.addTemplate('work');
         }
