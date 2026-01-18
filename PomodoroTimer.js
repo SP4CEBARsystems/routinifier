@@ -87,6 +87,12 @@ export class PomodoroTimer {
     /** @type {HTMLAudioElement} */
     breakAlarmSound
 
+    /** @type {(()=>void) | undefined} */
+    _onStart;
+
+    /** @type {(()=>void) | undefined} */
+    _onStop;
+
     /**
      * Creates a Pomodoro timer instance.
      * @param {HTMLCanvasElement} canvas
@@ -111,6 +117,22 @@ export class PomodoroTimer {
         this.workAlarmSound = new Audio('./audio/plannedout_work.wav'); // Placeholder path
         this.breakAlarmSound = new Audio('./audio/plannedout_break.wav'); // Placeholder path
         this.updateSummaryDisplay();
+    }
+
+    /**
+     * 
+     * @param {(()=>void) | undefined} value 
+     */
+    setOnStart(value) {
+        this._onStart = value;
+    }
+
+    /**
+     * 
+     * @param {(()=>void) | undefined} value 
+     */
+    setOnStop(value) {
+        this._onStop = value;
     }
 
     /** Get next phase based on Pomodoro technique rules */
@@ -187,6 +209,7 @@ export class PomodoroTimer {
             }
         }, 1000);
         this.updateSummaryDisplay()
+        if (this._onStart) this._onStart();
     }
 
     /** Stop the timer */
@@ -200,6 +223,7 @@ export class PomodoroTimer {
             if (this.onTick) this.onTick(this.remaining);
         }
         this.updateSummaryDisplay()
+        if (this._onStop) this._onStop();
     }
 
     /**
