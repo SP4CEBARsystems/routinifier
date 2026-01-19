@@ -6,6 +6,7 @@ import VideoStatusDisplay from "./VideoStatusDisplay.js";
 export default class VideoElement extends ElementLoader {
     static lofiGirlId = 'jfKfPfyJRdk';
     static atheistDelusionId = 'ChWiZ3iXWwM';
+    static rayComfortApproachesToughLookingGuys = 'pYOEsNlPv9c';
 
     /** @type {HTMLElement|null} */
     iframeContainer = null;
@@ -34,8 +35,9 @@ export default class VideoElement extends ElementLoader {
      * @param {string} [defaultYTId] 
      * @param {string} [statusLabel] 
      * @param {string} [iframeElementId] 
+     * @param {number} [defaultTimestamp] 
      */
-    constructor(iframeContainerId, statusId, inputId, buttonId, followTimerCheckboxId, defaultYTId = VideoElement.lofiGirlId, statusLabel = 'Video: ', iframeElementId) {
+    constructor(iframeContainerId, statusId, inputId, buttonId, followTimerCheckboxId, defaultYTId = VideoElement.lofiGirlId, statusLabel = 'Video: ', iframeElementId, defaultTimestamp) {
         super();
         [this.iframeContainer, this.status, this.input, this.button, this.followTimerCheckbox] = 
             /** @type {[HTMLElement, HTMLElement, HTMLInputElement, HTMLButtonElement, HTMLInputElement]} */
@@ -43,7 +45,7 @@ export default class VideoElement extends ElementLoader {
         if ([this.iframeContainer, this.status, this.input, this.button].some((element) => element === null || element === undefined)) {
             return;
         }
-        const iframeManager = new EmbedMaker(defaultYTId, null, true, this.iframeContainer ?? undefined, this.status ?? undefined, statusLabel, iframeElementId);
+        const iframeManager = new EmbedMaker(defaultYTId, null, true, this.iframeContainer ?? undefined, this.status ?? undefined, statusLabel, iframeElementId, defaultTimestamp);
         iframeManager.getPromise().then(this.onYTPlayerReady.bind(this));
         
         if (this.input && this.button) {
@@ -52,7 +54,6 @@ export default class VideoElement extends ElementLoader {
                 iframeManager.getPromise().then(this.onYTPlayerReady.bind(this));
             });
         }
-
     }
 
     /**

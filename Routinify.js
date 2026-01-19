@@ -61,7 +61,8 @@ export default class Routinify {
         this.handleKeys();
 
         this.musicPlayer = new VideoElement('video-container', 'musicDetailSummary', 'videoUrlInput', 'videoUrlButton', 'musicFollowTimer', VideoElement.lofiGirlId, 'Music: ', 'musicPlayer');
-        this.podcastPlayer = new VideoElement('podcast-container', 'podcastDetailSummary', 'podcastUrlInput', 'podcastUrlButton', 'podcastFollowTimer', VideoElement.atheistDelusionId, 'Podcast: ', 'podcastPlayer');
+        this.podcastPlayer = new VideoElement('podcast-container', 'podcastDetailSummary', 'podcastUrlInput', 'podcastUrlButton', 'podcastFollowTimer', VideoElement.rayComfortApproachesToughLookingGuys, 'Podcast: ', 'podcastPlayer', 48);
+
         this.timer.setOnStart(() => {
             this.musicPlayer.resume('timer');
             this.podcastPlayer.resume('timer');

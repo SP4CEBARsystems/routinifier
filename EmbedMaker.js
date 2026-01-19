@@ -13,8 +13,9 @@ export default class EmbedMaker extends DeferredManager {
      * @param {HTMLElement} [statusDisplayElement]
      * @param {string} [statusDisplayLabel]
      * @param {string} [iframeElementId]
+     * @param {number} [timestamp] 
      */
-    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel, iframeElementId = 'youtubePlayer') {
+    constructor(videoId = null, playlistId = null, isJsApiEnabled = false, parentElement, statusDisplayElement, statusDisplayLabel, iframeElementId = 'youtubePlayer', timestamp) {
         super();
         this.videoId = videoId;
         this.playlistId = playlistId;
@@ -23,6 +24,7 @@ export default class EmbedMaker extends DeferredManager {
         this.statusDisplayElement = statusDisplayElement;
         this.statusDisplayLabel = statusDisplayLabel;
         this.iframeElementId = iframeElementId;
+        this.timestamp = timestamp;
         this.resetCount = 0;
         this.resetDisplay();
         this.iframeDetectionPromise = this.createYouTubeIframe();
@@ -67,6 +69,7 @@ export default class EmbedMaker extends DeferredManager {
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
      * @param {boolean} [resetResetCount]
+     * @param {number} [timestamp] 
      * @returns {Promise<HTMLIFrameElement>}
      */
     async createYouTubeIframe(
@@ -75,7 +78,8 @@ export default class EmbedMaker extends DeferredManager {
         isJsApiEnabled = this.isJsApiEnabled ?? false, 
         parentElement = this.parentElement, 
         statusDisplayElement = this.statusDisplayElement,
-        resetResetCount = true
+        resetResetCount = true,
+        timestamp = this.timestamp
     ) {
         if (resetResetCount) {
             this.resetCount = 0;
@@ -87,10 +91,13 @@ export default class EmbedMaker extends DeferredManager {
         if (playlistId && playlistId !== this.playlistId) {
             this.playlistId = playlistId;
         }
+        if (timestamp && timestamp !== this.timestamp) {
+            this.timestamp = timestamp;
+        }
         this.isJsApiEnabled = isJsApiEnabled;
         this.parentElement = parentElement;
         this.statusDisplayElement = statusDisplayElement;
-        const newSrc = EmbedMaker.getSrc(playlistId, videoId, isJsApiEnabled);
+        const newSrc = EmbedMaker.getSrc(playlistId, videoId, isJsApiEnabled, timestamp);
         if (this.iframe?.src && this.iframe?.src === newSrc) {
             // identical
             return this.iframe;
@@ -152,11 +159,13 @@ export default class EmbedMaker extends DeferredManager {
      * @param {string|null} [playlistId] 
      * @param {string|null} [videoId] 
      * @param {boolean} [isJsApiEnabled] 
+     * @param {number} [timestamp] 
      * @returns {string}
      */
-    static getSrc(playlistId = null, videoId = null, isJsApiEnabled = false) {
+    static getSrc(playlistId = null, videoId = null, isJsApiEnabled = false, timestamp) {
         let src;
-        const queries = isJsApiEnabled ? 'enablejsapi=1' : '';
+        let queries = isJsApiEnabled ? 'enablejsapi=1' : '';
+        queries = `${queries}${queries && timestamp ? '&' : ''}${timestamp ? `amp;start=${timestamp}` : ''}`;
         // const queries = '';
         if (playlistId && videoId) {
             // Video that is part of a playlist
