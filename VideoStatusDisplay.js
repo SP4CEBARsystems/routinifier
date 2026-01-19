@@ -30,6 +30,11 @@ export default class VideoStatusDisplay extends DeferredManager {
     _onPlaying
 
     /**
+     * @type {(()=>void) | undefined}
+     */
+    _onPaused
+
+    /**
      * Creates a status display for YouTube embed iFrames that is updated by the youtube API
      * @param {HTMLElement} musicDetail 
      * @param {HTMLIFrameElement} [ytEl] 
@@ -57,6 +62,14 @@ export default class VideoStatusDisplay extends DeferredManager {
      */
     setOnPlaying(value) {
         this._onPlaying = value;
+    }
+
+    /**
+     * 
+     * @param {(()=>void) | undefined} value 
+     */
+    setOnPaused(value) {
+        this._onPaused = value;
     }
 
     /**
@@ -173,6 +186,7 @@ export default class VideoStatusDisplay extends DeferredManager {
         switch (status) {
             case 'Ready': this.resolve(this.youtubePlayer); break;
             case 'Error': this.reject(); break;
+            case 'Paused': if (this._onPaused) this._onPaused(); break;
             case 'Playing': if (this._onPlaying) this._onPlaying(); break;
         }
     }

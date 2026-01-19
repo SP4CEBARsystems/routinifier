@@ -23,7 +23,9 @@ export default class VideoElement extends ElementLoader {
     /** @type {HTMLInputElement|null} */
     followTimerCheckbox = null;
 
-    hasPlayed = false;
+    mayPlayPauseAutomatically = false;
+
+    _isPlaying = false;
 
     /**
      * 
@@ -63,7 +65,15 @@ export default class VideoElement extends ElementLoader {
     onYTPlayerReady({player, display}) {
         this.player = player;
         display.setOnPlaying(() => {
-            this.hasPlayed = true
+            this.mayPlayPauseAutomatically = true;
+            this._isPlaying = true;
+        });
+        display.setOnPaused(() => {
+            const isPausingManually = this._isPlaying;
+            console.log('pause', isPausingManually)
+            if (isPausingManually) {
+                this.mayPlayPauseAutomatically = false;
+            }
         });
     }
 
@@ -79,7 +89,8 @@ export default class VideoElement extends ElementLoader {
             return;
         }
         this.player.playVideo();
-        this.hasPlayed = true;
+        this._isPlaying = true;
+        this.mayPlayPauseAutomatically = true;
     }
 
     /** 
@@ -94,6 +105,7 @@ export default class VideoElement extends ElementLoader {
             return;
         }
         this.player.pauseVideo();
+        this._isPlaying = false;
     }
 
     /** 
@@ -108,7 +120,8 @@ export default class VideoElement extends ElementLoader {
             return;
         }
         this.player.stopVideo();
-        this.hasPlayed = false;
+        this._isPlaying = false;
+        this.mayPlayPauseAutomatically = false;
     }
 
     /** 
@@ -122,7 +135,7 @@ export default class VideoElement extends ElementLoader {
      * @param {'timer'|'undefined'} source
      */
     resume(source = 'undefined') {
-        if (!this.hasPlayed) return;
+        if (!this.mayPlayPauseAutomatically) return;
         this.play(source);
     }
 }
