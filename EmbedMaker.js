@@ -177,8 +177,14 @@ export default class EmbedMaker extends DeferredManager {
      */
     static getSrc(playlistId = null, videoId = null, isJsApiEnabled = false, timestamp = null) {
         let src;
-        let queries = isJsApiEnabled ? 'enablejsapi=1' : '';
-        queries = `${queries}${queries && timestamp ? '&' : ''}${timestamp ? `amp;start=${timestamp}` : ''}`;
+        const queriesArray = [];
+        if (isJsApiEnabled) {
+            queriesArray.push('enablejsapi=1');
+        }
+        if (timestamp) {
+            queriesArray.push(`amp;start=${timestamp}`);
+        }
+        const queries = queriesArray.length === 0 ? '' : `?${queriesArray.join('&')}`;
         
         if (playlistId && videoId) {
             // Video that is part of a playlist
