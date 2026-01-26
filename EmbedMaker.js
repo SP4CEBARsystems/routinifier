@@ -51,6 +51,18 @@ export default class EmbedMaker extends DeferredManager {
     /**
      * 
      * @param {string} url 
+     * @returns 
+     */
+    static extractYouTubeTime(url) {
+        const regex = /(?:\?|&)t=([a-zA-Z0-9_-]+)/;
+        const match = url.match(regex);
+        if (!match) return null;
+        return match[1] || null;
+    }
+
+    /**
+     * 
+     * @param {string} url 
      * @param {boolean} [isJsApiEnabled]
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
@@ -58,7 +70,8 @@ export default class EmbedMaker extends DeferredManager {
      */
     createYouTubeIframeFromUrl(url, isJsApiEnabled = false, parentElement, statusDisplayElement) {
         const {videoId, playlistId} = EmbedMaker.extractYouTubeIds(url);
-        return this.createYouTubeIframe(videoId, playlistId, isJsApiEnabled, parentElement, statusDisplayElement);
+        const videoTime = EmbedMaker.extractYouTubeTime(url);
+        return this.createYouTubeIframe(videoId, playlistId, isJsApiEnabled, parentElement, statusDisplayElement, true, videoTime);
     }
 
     /**
@@ -69,7 +82,7 @@ export default class EmbedMaker extends DeferredManager {
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
      * @param {boolean} [resetResetCount]
-     * @param {number} [timestamp] 
+     * @param {number|null} [timestamp] 
      * @returns {Promise<HTMLIFrameElement>}
      */
     async createYouTubeIframe(
@@ -79,7 +92,7 @@ export default class EmbedMaker extends DeferredManager {
         parentElement = this.parentElement, 
         statusDisplayElement = this.statusDisplayElement,
         resetResetCount = true,
-        timestamp = this.timestamp
+        timestamp = this.timestamp ?? null
     ) {
         if (resetResetCount) {
             this.resetCount = 0;
@@ -159,14 +172,14 @@ export default class EmbedMaker extends DeferredManager {
      * @param {string|null} [playlistId] 
      * @param {string|null} [videoId] 
      * @param {boolean} [isJsApiEnabled] 
-     * @param {number} [timestamp] 
+     * @param {number|null} [timestamp] 
      * @returns {string}
      */
-    static getSrc(playlistId = null, videoId = null, isJsApiEnabled = false, timestamp) {
+    static getSrc(playlistId = null, videoId = null, isJsApiEnabled = false, timestamp = null) {
         let src;
         let queries = isJsApiEnabled ? 'enablejsapi=1' : '';
         queries = `${queries}${queries && timestamp ? '&' : ''}${timestamp ? `amp;start=${timestamp}` : ''}`;
-        // const queries = '';
+        
         if (playlistId && videoId) {
             // Video that is part of a playlist
             src = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?list=${encodeURIComponent(playlistId)}${queries ? '&' : ''}${queries}`;
