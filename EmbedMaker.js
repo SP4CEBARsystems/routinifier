@@ -57,7 +57,7 @@ export default class EmbedMaker extends DeferredManager {
         const regex = /(?:\?|&)t=([a-zA-Z0-9_-]+)/;
         const match = url.match(regex);
         if (!match) return null;
-        return match[1] || null;
+        return parseInt(match[1]) || null;
     }
 
     /**
@@ -78,18 +78,32 @@ export default class EmbedMaker extends DeferredManager {
     /**
      * 
      * @param {string} url 
+     * @returns 
+     */
+    static decomposeUrl(url) {
+        let {videoId, playlistId} = EmbedMaker.extractYouTubeIds(url);
+        if (!videoId && !playlistId) {
+            playlistId = EmbedMaker.extractYouTubeChannel(url);
+        }
+        const timestamp = EmbedMaker.extractYouTubeTime(url);
+        return {
+            videoId,
+            playlistId,
+            timestamp
+        }
+    }
+
+    /**
+     * 
+     * @param {string} url 
      * @param {boolean} [isJsApiEnabled]
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
      * @returns {Promise<HTMLIFrameElement>}
      */
     createYouTubeIframeFromUrl(url, isJsApiEnabled = false, parentElement, statusDisplayElement) {
-        let {videoId, playlistId} = EmbedMaker.extractYouTubeIds(url);
-        if (!videoId && !playlistId) {
-            playlistId = EmbedMaker.extractYouTubeChannel(url);
-        }
-        const videoTime = EmbedMaker.extractYouTubeTime(url);
-        return this.createYouTubeIframe(videoId, playlistId, isJsApiEnabled, parentElement, statusDisplayElement, true, videoTime);
+        const {videoId, playlistId, timestamp} = EmbedMaker.decomposeUrl(url);
+        return this.createYouTubeIframe(videoId, playlistId, isJsApiEnabled, parentElement, statusDisplayElement, true, timestamp);
     }
 
     /**
