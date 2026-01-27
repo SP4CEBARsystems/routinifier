@@ -63,13 +63,31 @@ export default class EmbedMaker extends DeferredManager {
     /**
      * 
      * @param {string} url 
+     * @returns 
+     */
+    static extractYouTubeChannel(url) {
+        const regex = /youtube\.com\/channel\/([a-zA-Z0-9_-]+)/;
+        const match = url.match(regex);
+        if (!match) return null;
+        const channelId = match[1];
+        if (!channelId) return null;
+        const playlistId = channelId.replace(/^UC/, 'UU');
+        return playlistId || null;
+    }
+
+    /**
+     * 
+     * @param {string} url 
      * @param {boolean} [isJsApiEnabled]
      * @param {HTMLElement} [parentElement]
      * @param {HTMLElement} [statusDisplayElement]
      * @returns {Promise<HTMLIFrameElement>}
      */
     createYouTubeIframeFromUrl(url, isJsApiEnabled = false, parentElement, statusDisplayElement) {
-        const {videoId, playlistId} = EmbedMaker.extractYouTubeIds(url);
+        let {videoId, playlistId} = EmbedMaker.extractYouTubeIds(url);
+        if (!videoId && !playlistId) {
+            playlistId = EmbedMaker.extractYouTubeChannel(url);
+        }
         const videoTime = EmbedMaker.extractYouTubeTime(url);
         return this.createYouTubeIframe(videoId, playlistId, isJsApiEnabled, parentElement, statusDisplayElement, true, videoTime);
     }
